@@ -1594,7 +1594,7 @@
   <h2>Game Audio Collection</h2>
 
 <p style="opacity:0.7; margin-bottom:20px;">
-  All tracks are loop-ready and designed for seamless in-game use.
+  All game tracks are loop-ready and designed for seamless in-game use.
 </p>
 
 <div class="panel featured-track" style="margin-bottom:30px;">
@@ -2191,9 +2191,9 @@ document.querySelectorAll('#music .card, #personal .card, .featured-track').forE
 
     if (player.paused) {
       title.dataset.original = title.dataset.original || title.innerHTML;
-	title.innerHTML = '▶ ' + title.dataset.original;
+	title.innerHTML = title.dataset.original;
 
-	nowPlayingText.textContent = 'NOW PLAYING · ' + title.textContent.replace('▶ ', '');
+	nowPlayingText.textContent = 'NOW PLAYING · ' + title.textContent;
 	nowPlayingBar.classList.add('show');
 
       await player.play();
