@@ -300,7 +300,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 150px 20px 60px; /* weniger Abstand nach oben */
+      padding: 125px 20px 45px;
       text-align: center;
     }
 
@@ -309,6 +309,7 @@
       margin-top: 24px;
       padding: 68px 64px;
       border-radius: 42px;
+      isolation: isolate;
 
       background: linear-gradient(
         180deg,
@@ -328,34 +329,34 @@
       position: relative;
       overflow: hidden;
 
-      transition: box-shadow 0.25s ease, border-color 0.25s ease;
+      transition:
+  	box-shadow 1.2s ease,
+  	border-color 1.2s ease;
     }
 
     .hero:hover {
-      border-color: rgba(0,229,255,0.7);
-      box-shadow:
-        0 0 95px rgba(0,229,255,0.4),
-        0 0 140px rgba(255,79,216,0.3),
-        inset 0 0 30px rgba(255,255,255,0.06);
+  	border-color: rgba(0,229,255,0.62);
     }
 
-    
+    .hero::after {
+  	content: "";
+  	position: absolute;
+  	inset: -3px;
+  	border-radius: inherit;
+  	pointer-events: none;
+  	opacity: 0;
+  	z-index: -1;
 
-    
+  	box-shadow:
+    	0 0 82px rgba(0,229,255,0.32),
+    	0 0 120px rgba(255,79,216,0.24),
+    	0 0 50px rgba(139,92,246,0.16);
 
-    .hero:hover {
-      border-color: rgba(0,229,255,0.68);
-      box-shadow:
-        0 0 55px rgba(0,229,255,0.45),
-        0 0 95px rgba(255,79,216,0.35),
-        0 0 145px rgba(139,92,246,0.24),
-        inset 0 0 34px rgba(255,255,255,0.065);
+  	transition: opacity 1.2s ease;
     }
 
-    
-      to { left: 120%; }
-    }
-      100% { left: 120%; }
+    .hero:hover::after {
+  	opacity: 1;
     }
 
     .hero-corners::before {
@@ -370,25 +371,6 @@
       bottom: 0;
       border-left: 2px solid rgba(255,79,216,0.55);
       border-bottom: 2px solid rgba(255,255,255,0.35);
-    }
-
-    .hero:hover {
-      box-shadow:
-        0 0 70px rgba(0,229,255,0.22),
-        0 0 90px rgba(255,79,216,0.16),
-        inset 0 0 34px rgba(255,255,255,0.045);
-    }
-      to { left: 120%; }
-    }
-
-    .hero:hover {
-      box-shadow:
-        0 0 160px rgba(255,79,216,0.35),
-        0 0 200px rgba(0,229,255,0.25),
-        0 0 80px rgba(139,92,246,0.28),
-        inset 0 0 60px rgba(255,255,255,0.07);
-
-      transform: translateY(-4px);
     }
 
     /* zusätzliche UI-Ecken */
@@ -719,7 +701,10 @@
         0 0 46px rgba(0,229,255,0.14),
         0 0 30px rgba(139,92,246,0.18),
         inset 0 0 24px rgba(255,255,255,0.025);
-      transition: 0.25s ease;
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
       position: relative;
       overflow: hidden;
       backdrop-filter: blur(16px);
@@ -962,6 +947,10 @@
   
   @media (max-width: 760px) {
 
+      .np-visualizer {
+	display: none;
+      }
+
       .top-header {
   	position: absolute;
   	height: auto;
@@ -1042,6 +1031,24 @@
       }
     }
 
+.game-entry {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,229,255,0.14);
+}
+
+.game-entry a {
+  font-size: 12px;
+  color: var(--cyan);
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.game-entry a:hover {
+  opacity: 1;
+  text-shadow: 0 0 10px rgba(0,229,255,0.6);
+}
+
 .fanart-btn {
   display: inline-flex;
   align-items: center;
@@ -1088,6 +1095,8 @@
   transform: scale(1.05);
   transition: 0.25s ease;
 }
+
+
 
 /* =========================
    MUSIC FIX
@@ -1146,6 +1155,10 @@
   cursor: pointer;
 }
 
+.cyber-play:active {
+  transform: scale(0.9);
+}
+
 .cyber-play,
 .cyber-bar {
   position: relative;
@@ -1174,6 +1187,15 @@
   background: rgba(255,255,255,0.12);
   outline: none;
   cursor: pointer;
+}
+
+#personal {
+  padding-top: 20px;
+  margin-top: -40px;
+}
+
+#personal h2 {
+  margin-top: 0;
 }
 
 /* Chrome / Edge / Safari */
@@ -1238,6 +1260,220 @@
     transform: scale(1);
     opacity: 1;
   }
+}
+
+#nowPlayingBar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  min-width: min(420px, calc(100% - 36px));
+  text-align: center;
+
+
+  padding: 10px 18px;
+  border-radius: 999px;
+
+  background: rgba(4,6,28,0.8);
+  border: 1px solid rgba(0,229,255,0.4);
+
+  color: var(--cyan);
+  font-size: 12px;
+  letter-spacing: 2px;
+
+  box-shadow:
+    0 0 20px rgba(0,229,255,0.3),
+    0 0 40px rgba(255,79,216,0.2);
+
+  backdrop-filter: blur(12px);
+  z-index: 200;
+
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+#nowPlayingBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.np-visualizer {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 14px;
+}
+
+.np-visualizer span {
+  width: 3px;
+  height: 5px;
+  background: linear-gradient(var(--cyan), var(--pink));
+  border-radius: 2px;
+  opacity: 0.4;
+}
+
+/* ANIMATION nur wenn aktiv */
+#nowPlayingBar.show .np-visualizer span {
+  animation: npEqualize 0.8s infinite ease-in-out;
+}
+
+#nowPlayingBar.show .np-visualizer span:nth-child(2) {
+  animation-delay: 0.1s;
+}
+#nowPlayingBar.show .np-visualizer span:nth-child(3) {
+  animation-delay: 0.2s;
+}
+#nowPlayingBar.show .np-visualizer span:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+@keyframes npEqualize {
+  0% { height: 5px; opacity: 0.3; }
+  50% { height: 14px; opacity: 1; }
+  100% { height: 5px; opacity: 0.3; }
+}
+
+#nowPlayingBar.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.home-projects {
+  max-width: 760px;
+  margin: -35px auto -20px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 3;
+}
+
+.home-projects details {
+  border: none;
+  border-radius: 18px;
+  background: transparent;
+  backdrop-filter: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+.home-projects details[open] summary::after {
+  content: " ▴";
+}
+
+.home-projects summary {
+  cursor: pointer;
+  color: #eaffff;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 12px 16px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(0,229,255,0.35);
+
+ background: linear-gradient(
+  180deg,
+  rgba(6,8,40,0.75),
+  rgba(3,4,20,0.85)
+);
+
+  box-shadow:
+    0 0 12px rgba(0,229,255,0.18),
+    0 0 18px rgba(255,79,216,0.12);
+
+  backdrop-filter: blur(10px);
+  transition: 0.25s ease;
+}
+
+.home-projects summary:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(0,229,255,0.18),
+    rgba(255,79,216,0.18)
+  );
+
+  border-color: rgba(0,229,255,0.7);
+
+  box-shadow:
+    0 0 20px rgba(0,229,255,0.35),
+    0 0 30px rgba(255,79,216,0.22);
+
+  transform: translateY(-2px);
+}
+
+.home-projects summary::after {
+  content: " ▾";
+  margin-left: 6px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.home-project-grid {
+  display: block;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(4,6,28,0.38);
+  border: 1px solid rgba(0,229,255,0.14);
+}
+
+.log-entry {
+  padding: 12px 0;
+  border-top: 1px solid rgba(0,229,255,0.14);
+}
+
+.log-date {
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  background: rgba(0,229,255,0.08);
+  border: 1px solid rgba(0,229,255,0.25);
+  padding: 4px 8px;
+  border-radius: 999px;
+  display: inline-block;
+
+  color: var(--cyan);
+  opacity: 0.9;
+
+  text-shadow: 0 0 8px rgba(0,229,255,0.6);
+
+  margin-bottom: 6px;
+}
+
+.log-entry strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.log-entry p {
+  color: var(--soft);
+  opacity: 0.72;
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.track-icon.personal {
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22), transparent 28%),
+    linear-gradient(135deg, rgba(139,92,246,0.6), rgba(255,79,216,0.4));
+}
+
+.track-icon.personal::after {
+  content: "ART";
+}
+
+#personal .panel > p {
+  font-size: 18px;
+  text-align: center;
+  line-height: 1.75;
+}
+
+#personal .card p {
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.55;
 }
 
   </style>
@@ -1306,8 +1542,53 @@
 
     <!-- Quick panels -->
     
+<div class="home-projects">
+  <details>
+    <summary>Show Projects & Work</summary>
+
+    <div class="home-project-grid">
+
+  <div class="log-entry">
+  <div class="log-date">GAME PROJECT · RELEASED</div>
+
+  <strong>ANIMA FIGHT</strong>
+
+  <p>Music for combat and menu systems.</p>
+
+  <div style="margin-top:8px; display:flex; gap:10px; flex-wrap:wrap;">
+
+    <a href="#music" class="fanart-btn">
+      🎵 Tracks
+    </a>
+
+    <a href="https://snailtank.itch.io/anima-fight" target="_blank" class="fanart-btn">
+      🎮 Play Game
+    </a>
+
+  </div>
+</div>
+
+<div class="log-entry">
+  <div class="log-date">GAME PROJECT · IN PROGRESS</div>
+
+  <strong>Upcoming Cafe Game</strong>
+
+  <p>Currently working on story and menu music.</p>
+
+  <div style="margin-top:8px;">
+    <span style="font-size:12px; opacity:0.6;">
+      Not released yet
+    </span>
+  </div>
+</div>
+
+</div>
+    </div>
+  </details>
+</div>
 
     <!-- Tracks -->
+
 <section class="content-section" id="music">
   <div class="section-kicker">Portfolio</div>
   <h2>Game Audio Collection</h2>
@@ -1315,6 +1596,35 @@
 <p style="opacity:0.7; margin-bottom:20px;">
   All tracks are loop-ready and designed for seamless in-game use.
 </p>
+
+<div class="panel featured-track" style="margin-bottom:30px;">
+  <div class="section-kicker">Featured Track</div>
+
+<h3 style="font-size:28px; margin-bottom:10px;">
+  Combat Track II
+</h3>
+
+  <p style="opacity:0.8; margin-bottom:16px;">
+    A high-energy combat track created for ANIMA FIGHT,
+    designed to loop seamlessly during intense gameplay.
+  </p>
+
+  <div class="cyber-player">
+    <button class="cyber-play" type="button">▶</button>
+    <div class="cyber-bar">
+      <div class="cyber-fill"></div>
+    </div>
+    <span class="cyber-time">0:00</span>
+
+    <span style="font-size:10px; opacity:0.6; letter-spacing:2px; color:var(--cyan);">
+      VOL
+    </span>
+
+    <input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
+  </div>
+
+  <audio class="track-audio" src="music/ANIMA FIGHT - Night City.mp3"></audio>
+</div>
 
   <div class="filters">
     <button class="filter-btn active" data-filter="all" type="button">All</button>
@@ -1497,7 +1807,81 @@
   </div>
 </section>
 
-    <!-- About / Contact -->
+   <!-- Personal -->
+
+<section class="content-section" id="personal">
+  <div class="section-kicker">Music</div>
+  <h2>Personal Tracks</h2>
+
+  <div class="panel">
+
+    <p style="opacity:0.7; margin-bottom:24px;">
+      Tracks outside of game projects — more experimental,
+      emotional or just created for fun.
+    </p>
+
+   <div class="grid">
+
+  <!-- Track 1 -->
+
+  <div class="card">
+
+    <div class="track-icon personal"></div>
+    <h3>Love.exe stopped working</h3>
+    
+    <p>A standalone track exploring a different vibe.</p>
+
+    <audio class="track-audio" src="music/Love.exe stopped working.mp3"></audio>
+
+    <div class="cyber-player">
+      <button class="cyber-play" type="button">▶</button>
+      <div class="cyber-bar">
+        <div class="cyber-fill"></div>
+      </div>
+      <span class="cyber-time">0:00</span>
+
+      <span style="font-size:10px; opacity:0.6; letter-spacing:2px; color:var(--cyan);">
+        VOL
+      </span>
+
+      <input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
+    </div>
+  </div>
+
+  <!-- Track 2 -->
+
+  <div class="card">
+
+    <div class="track-icon personal"></div>
+    <h3>Kinetic Energy</h3>
+
+    <p>Another personal track with a many genres from back in the days.</p>
+
+    <audio class="track-audio" src="music/Kinetic Energy.mp3"></audio>
+     
+    <div class="cyber-player">
+      <button class="cyber-play" type="button">▶</button>
+      <div class="cyber-bar">
+        <div class="cyber-fill"></div>
+      </div>
+      <span class="cyber-time">0:00</span>
+
+      <span style="font-size:10px; opacity:0.6; letter-spacing:2px; color:var(--cyan);">
+        VOL
+      </span>
+
+      <input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
+    </div>
+  </div>
+
+</div>
+
+    </div>
+
+  </div>
+</section>
+
+    <!-- Fanart -->
     
 <section class="content-section" id="fanart">
   <div class="section-kicker">Community</div>
@@ -1651,7 +2035,16 @@
   <img id="lightbox-img" src="">
 </div>
 
-  <script>
+<div id="nowPlayingBar">
+  <div class="np-visualizer">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <span id="nowPlayingText">Nothing playing</span>
+</div>
+
+<script defer>
+
     /* =========================
        BACKGROUND GENERATORS
     ========================= */
@@ -1754,7 +2147,10 @@
 
 const players = document.querySelectorAll('.track-audio');
 
-document.querySelectorAll('#music .card').forEach(card => {
+const nowPlayingBar = document.getElementById('nowPlayingBar');
+const nowPlayingText = document.getElementById('nowPlayingText');
+
+document.querySelectorAll('#music .card, #personal .card, .featured-track').forEach(card => {
   const player = card.querySelector('.track-audio');
   const playBtn = card.querySelector('.cyber-play');
   const fill = card.querySelector('.cyber-fill');
@@ -1797,6 +2193,9 @@ document.querySelectorAll('#music .card').forEach(card => {
       title.dataset.original = title.dataset.original || title.innerHTML;
 	title.innerHTML = '▶ ' + title.dataset.original;
 
+	nowPlayingText.textContent = 'NOW PLAYING · ' + title.textContent.replace('▶ ', '');
+	nowPlayingBar.classList.add('show');
+
       await player.play();
 
       card.classList.add('playing');
@@ -1804,6 +2203,8 @@ document.querySelectorAll('#music .card').forEach(card => {
 
     } else {
       player.pause();
+
+	nowPlayingBar.classList.remove('show');
 
       if (title.dataset.original) {
         title.innerHTML = title.dataset.original;
@@ -1821,6 +2222,7 @@ document.querySelectorAll('#music .card').forEach(card => {
   });
 
   player.addEventListener('ended', () => {
+    nowPlayingBar.classList.remove('show');
     card.classList.remove('playing');
     playBtn.textContent = '▶';
     fill.style.width = '0%';
