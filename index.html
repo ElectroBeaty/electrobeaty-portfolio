@@ -959,9 +959,12 @@
     /* =========================
        6. MOBILE
     ========================= */
-    @media (max-width: 760px) {
+  
+  @media (max-width: 760px) {
+
       .top-header {
-        position: absolute;
+  	position: absolute;
+  	height: auto;
         top: 14px;
         border-radius: 28px;
         flex-direction: column;
@@ -970,14 +973,27 @@
       }
 
       .top-logo {
-        order: -1;
-        width: min(330px, 86vw);
+ 	position: static;
+  	transform: none;
+  	order: -1;
+  	width: 100%;
+  	display: flex;
+  	justify-content: center;
+  	pointer-events: auto;
       }
 
       .top-logo img {
-        width: 100%;
-        margin: -12px auto -10px;
-        max-height: 110px;
+  	width: 180px;
+  	max-height: none;
+  	margin: 0 auto 4px;
+      }
+
+	.nav-left {
+  	order: 1;
+      }
+
+	.nav-right {
+  	order: 2;
       }
 
       .nav-left,
