@@ -736,9 +736,19 @@
       box-shadow: 0 0 48px rgba(139,92,246,0.22), 0 0 28px rgba(0,229,255,0.13);
     }
 
-    .card.is-hidden {
-      display: none;
-    }
+.card {
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease,
+    filter 0.28s ease;
+}
+
+.card.is-hidden {
+  opacity: 0.15;
+  transform: scale(0.98);
+  filter: blur(1px);
+  pointer-events: none;
+}
 
     .card h3 {
       margin-bottom: 10px;
@@ -2139,9 +2149,23 @@
         const filter = button.dataset.filter;
 
         cards.forEach(card => {
-          const categories = card.dataset.category || '';
-          card.classList.toggle('is-hidden', filter !== 'all' && !categories.includes(filter));
-        });
+  const categories = card.dataset.category || '';
+  const shouldHide = filter !== 'all' && !categories.includes(filter);
+
+  if (shouldHide) {
+    card.classList.add('is-hidden');
+
+    setTimeout(() => {
+      card.classList.add('hidden-final');
+    }, 250);
+  } else {
+    card.classList.remove('hidden-final');
+
+    setTimeout(() => {
+      card.classList.remove('is-hidden');
+    }, 20);
+  }
+});
       });
     });
 
@@ -2256,6 +2280,13 @@ document.querySelectorAll('#fanart img').forEach(img => {
 lightbox.addEventListener('click', () => {
   lightbox.classList.remove('show');
   lightbox.style.display = 'none';
+});
+
+cards.forEach(card => {
+  const categories = card.dataset.category || '';
+  const shouldHide = filter !== 'all' && !categories.includes(filter);
+
+  card.classList.toggle('is-hidden', shouldHide);
 });
 
   </script>
