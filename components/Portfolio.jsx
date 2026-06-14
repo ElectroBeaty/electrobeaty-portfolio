@@ -38,8 +38,12 @@ function Player({ track, currentSrc, setCurrentSrc }) {
       return;
     }
 
-    setCurrentSrc(track.file);
-    await audio.play();
+    try {
+      setCurrentSrc(track.file);
+      await audio.play();
+    } catch {
+      setCurrentSrc("");
+    }
   }
 
   function seek(event) {
@@ -115,6 +119,12 @@ function TrackCard({ track, currentSrc, setCurrentSrc }) {
       ) : null}
     </div>
   );
+}
+
+function externalLinkProps(href) {
+  return typeof href === "string" && href.startsWith("http")
+    ? { target: "_blank", rel: "noopener noreferrer" }
+    : {};
 }
 
 function Background() {
@@ -260,7 +270,12 @@ export function Portfolio({ content }) {
                   {project.links?.length ? (
                     <div className="project-actions">
                       {project.links.map((link) => (
-                        <a className="fanart-btn" href={link.href} key={link.href}>
+                        <a
+                          className="fanart-btn"
+                          href={link.href}
+                          key={link.href}
+                          {...externalLinkProps(link.href)}
+                        >
                           {link.label}
                         </a>
                       ))}
@@ -382,7 +397,12 @@ export function Portfolio({ content }) {
                   {item.artistLinks?.length ? (
                     <div className="fanart-links">
                       {item.artistLinks.map((link) => (
-                        <a className="fanart-btn" href={link.href} key={link.href}>
+                        <a
+                          className="fanart-btn"
+                          href={link.href}
+                          key={link.href}
+                          {...externalLinkProps(link.href)}
+                        >
                           {link.label}
                         </a>
                       ))}
@@ -421,7 +441,12 @@ export function Portfolio({ content }) {
             </p>
             <div className="contact-links">
               {content.contactLinks.map((link) => (
-                <a className="main-btn" href={link.href} key={link.href}>
+                <a
+                  className="main-btn"
+                  href={link.href}
+                  key={link.href}
+                  {...externalLinkProps(link.href)}
+                >
                   {link.label}
                 </a>
               ))}

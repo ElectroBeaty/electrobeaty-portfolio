@@ -11,8 +11,15 @@ export async function GET() {
     return NextResponse.json({ error: "Nicht eingeloggt." }, { status: 401 });
   }
 
-  const content = await getPortfolioContent();
-  return NextResponse.json({ content });
+  try {
+    const content = await getPortfolioContent();
+    return NextResponse.json({ content });
+  } catch {
+    return NextResponse.json(
+      { error: "Inhalte konnten nicht geladen werden." },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(request) {
@@ -20,9 +27,16 @@ export async function POST(request) {
     return NextResponse.json({ error: "Nicht eingeloggt." }, { status: 401 });
   }
 
-  const body = await request.json();
-  const result = await savePortfolioContent(body.content);
+  try {
+    const body = await request.json();
+    const result = await savePortfolioContent(body.content);
 
-  revalidatePath("/");
-  return NextResponse.json(result);
+    revalidatePath("/");
+    return NextResponse.json(result);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Speichern fehlgeschlagen." },
+      { status: 500 },
+    );
+  }
 }
