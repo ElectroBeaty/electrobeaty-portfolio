@@ -1,0 +1,10 @@
+node_modules
+.next
+.vercel
+.env*
+!.env.example
+dev-server.log
+dev-server.err.log
+.admin-password.txt
+
+.vercel

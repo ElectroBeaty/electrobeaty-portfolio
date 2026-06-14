@@ -1,0 +1,17 @@
+{
+  "name": "electrobeaty-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.4.0",
+    "next": "^16.1.6",
+    "postcss": "^8.5.15",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  }
+}

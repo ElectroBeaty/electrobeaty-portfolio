@@ -1484,6 +1484,64 @@
   line-height: 1.55;
 }
 
+.project-actions,
+.contact-links {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.contact-links {
+  margin-top: 30px;
+  gap: 14px;
+}
+
+.project-note,
+.art-credit,
+.art-note {
+  font-size: 13px;
+  opacity: 0.65;
+}
+
+.project-note {
+  margin-top: 10px;
+}
+
+.art-credit {
+  margin-top: -6px;
+}
+
+.art-note {
+  margin-top: 12px;
+}
+
+.versions-block {
+  margin-top: 10px;
+}
+
+.versions-block h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.track-badge,
+.volume-label {
+  font-size: 11px;
+  opacity: 0.6;
+  letter-spacing: 1px;
+  margin-left: 6px;
+}
+
+.volume-label {
+  margin-left: 0;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--cyan);
+  text-shadow: 0 0 8px rgba(0,229,255,0.5);
+}
+
   </style>
 </head>
 
@@ -1554,44 +1612,7 @@
   <details>
     <summary>Show Projects & Work</summary>
 
-    <div class="home-project-grid">
-
-  <div class="log-entry">
-  <div class="log-date">GAME PROJECT · RELEASED</div>
-
-  <strong>ANIMA FIGHT</strong>
-
-  <p>Music for combat and menu systems.</p>
-
-  <div style="margin-top:8px; display:flex; gap:10px; flex-wrap:wrap;">
-
-    <a href="#music" class="fanart-btn">
-      🎵 Tracks
-    </a>
-
-    <a href="https://snailtank.itch.io/anima-fight" target="_blank" class="fanart-btn">
-      🎮 Play Game
-    </a>
-
-  </div>
-</div>
-
-<div class="log-entry">
-  <div class="log-date">GAME PROJECT · IN PROGRESS</div>
-
-  <strong>Upcoming Cafe Game</strong>
-
-  <p>Currently working on story and menu music.</p>
-
-  <div style="margin-top:8px;">
-    <span style="font-size:12px; opacity:0.6;">
-      Not released yet
-    </span>
-  </div>
-</div>
-
-</div>
-    </div>
+    <div class="home-project-grid" data-render="projects"></div>
   </details>
 </div>
 
@@ -1605,34 +1626,7 @@
   All game tracks are loop-ready and designed for seamless in-game use.
 </p>
 
-<div class="panel featured-track" style="margin-bottom:30px;">
-  <div class="section-kicker">Featured Track</div>
-
-<h3 style="font-size:28px; margin-bottom:10px;">
-  Combat Track II
-</h3>
-
-  <p style="opacity:0.8; margin-bottom:16px;">
-    A high-energy combat track created for ANIMA FIGHT,
-    designed to loop seamlessly during intense gameplay.
-  </p>
-
-  <div class="cyber-player">
-    <button class="cyber-play" type="button">▶</button>
-    <div class="cyber-bar">
-      <div class="cyber-fill"></div>
-    </div>
-    <span class="cyber-time">0:00</span>
-
-    <span style="font-size:10px; opacity:0.6; letter-spacing:2px; color:var(--cyan);">
-      VOL
-    </span>
-
-    <input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
-  </div>
-
-  <audio class="track-audio" src="music/ANIMA FIGHT - Night City.mp3"></audio>
-</div>
+<div class="panel featured-track" data-render="featured-track"></div>
 
   <div class="filters">
     <button class="filter-btn active" data-filter="all" type="button">All</button>
@@ -1642,177 +1636,7 @@
     <button class="filter-btn" data-filter="story" type="button">Story</button>
   </div>
 
-  <div class="grid">
-    <div class="card" data-category="combat">
-      <div class="track-icon combat"></div>
-      <h3>Combat Track I</h3>
-      <p>First song I made for the game ANIMA FIGHT.</p>
-      <audio class="track-audio" src="music/ANIMA FIGHT - Monorails.mp3"></audio>
-	<div class="cyber-player">
-  	<button class="cyber-play" type="button">▶</button>
-  	<div class="cyber-bar">
-    	<div class="cyber-fill"></div>
-  	</div>
-  	<span class="cyber-time">0:00</span>
-	<span style="
-  		font-size:10px;
-  		opacity:0.6;
-  		letter-spacing:2px;
-  		color:var(--cyan);
-  		text-shadow: 0 0 8px rgba(0,229,255,0.5);
-		">
-  		VOL
-	</span>
-	<input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
-	</div>
-      <div class="chips"><span class="chip">Combat</span></div>
-    </div>
-
-    <div class="card" data-category="combat">
-      <div class="track-icon combat"></div>
-      <h3>Combat Track II</h3>
-      <p>We needed another level for the game ANIMA FIGHT, so I did this.</p>
-      <audio class="track-audio" src="music/ANIMA FIGHT - Night City.mp3"></audio>
-	<div class="cyber-player">
-  	<button class="cyber-play" type="button">▶</button>
-  	<div class="cyber-bar">
-    	<div class="cyber-fill"></div>
-  	</div>
-  	<span class="cyber-time">0:00</span>
-	<span style="
-  		font-size:10px;
-  		opacity:0.6;
-  		letter-spacing:2px;
-  		color:var(--cyan);
-  		text-shadow: 0 0 8px rgba(0,229,255,0.5);
-		">
-  		VOL
-	</span>
-	<input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
-	</div>
-      <div class="chips"><span class="chip">Combat</span></div>
-    </div>
-
-    <div class="card" data-category="story">
-      <div class="track-icon story"></div>
-      <h3>
-  	Story Theme
-  	<span style="
-    	font-size:11px;
-    	opacity:0.6;
-    	letter-spacing:1px;
-    	margin-left:6px;
-  	">
-    	• UNRELEASED
-  	</span>
-	</h3>
-      <p>Its the track, that plays while running the cafe in the upcoming cafe game.</p>
-      <audio class="track-audio" src="music/Cafe - Day Hustle.mp3"></audio>
-	<div class="cyber-player">
-  	<button class="cyber-play" type="button">▶</button>
-  	<div class="cyber-bar">
-    	<div class="cyber-fill"></div>
-  	</div>
-  	<span class="cyber-time">0:00</span>
-	<span style="
-  		font-size:10px;
-  		opacity:0.6;
-  		letter-spacing:2px;
-  		color:var(--cyan);
-  		text-shadow: 0 0 8px rgba(0,229,255,0.5);
-		">
-  		VOL
-	</span>
-	<input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
-	</div>
-      <div class="chips"><span class="chip">Story</span></div>
-    </div>
-
-    <div class="card" data-category="menu">
-      <div class="track-icon menu"></div>
-      <h3>Menu Theme I</h3>
-      <p>Happened by accident, when I composed the second level track for ANIMA FIGHT.</p>
-      <audio class="track-audio" src="music/ANIMA FIGHT - Menu.mp3"></audio>
-	<div class="cyber-player">
-  	<button class="cyber-play" type="button">▶</button>
-  	<div class="cyber-bar">
-    	<div class="cyber-fill"></div>
-  	</div>
-  	<span class="cyber-time">0:00</span>
-	<span style="
-  		font-size:10px;
-  		opacity:0.6;
-  		letter-spacing:2px;
-  		color:var(--cyan);
-  		text-shadow: 0 0 8px rgba(0,229,255,0.5);
-		">
-  		VOL
-	</span>
-	<input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
-	</div>
-      <div class="chips"><span class="chip">Menu</span></div>
-    </div>
-
-    <div class="card" data-category="menu">
-      <div class="track-icon menu"></div>
-      <h3>
-  	Menu Theme
-  	<span style="
-    	font-size:11px;
-    	opacity:0.6;
-    	letter-spacing:1px;
-    	margin-left:6px;
-  	">
-    	• UNRELEASED
-  	</span>
-	</h3>
-      <p>Cozy and spaced-out menu track for the upcoming cafe game.</p>
-      <audio class="track-audio" src="music/Cafe - Menu.mp3"></audio>
-	<div class="cyber-player">
-  	<button class="cyber-play" type="button">▶</button>
-  	<div class="cyber-bar">
-    	<div class="cyber-fill"></div>
-  	</div>
-  	<span class="cyber-time">0:00</span>
-	<span style="
-  		font-size:10px;
-  		opacity:0.6;
-  		letter-spacing:2px;
-  		color:var(--cyan);
-  		text-shadow: 0 0 8px rgba(0,229,255,0.5);
-		">
-  		VOL
-	</span>
-	<input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
-	</div>
-      <div class="chips"><span class="chip">Menu</span></div>
-    </div>
-
-    <div class="card" data-category="ambient">
-      <div class="track-icon ambient"></div>
-      <h3>Atmosphere</h3>
-      <p>The BGM for The Underpass. Its the casual version, so if you want to hear the other version, you need to play it. :)</p>
-      <audio class="track-audio" src="music/The Underpass - Sanity High.mp3"></audio>
-	<div class="cyber-player">
-  	<button class="cyber-play" type="button">▶</button>
-  	<div class="cyber-bar">
-    	<div class="cyber-fill"></div>
-  	</div>
-  	<span class="cyber-time">0:00</span>
-	<span style="
-  		font-size:10px;
-  		opacity:0.6;
-  		letter-spacing:2px;
-  		color:var(--cyan);
-  		text-shadow: 0 0 8px rgba(0,229,255,0.5);
-		">
-  		VOL
-	</span>
-	<input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
-	</div>
-      <div class="chips"><span class="chip">Atmosphere</span></div>
-    </div>
-  </div>
+  <div class="grid" data-render="game-tracks"></div>
 </section>
 
    <!-- Personal -->
@@ -1822,70 +1646,12 @@
   <h2>Personal Tracks</h2>
 
   <div class="panel">
-
     <p style="opacity:0.7; margin-bottom:24px;">
-      Tracks outside of game projects — more experimental,
+      Tracks outside of game projects - more experimental,
       emotional or just created for fun.
     </p>
 
-   <div class="grid">
-
-  <!-- Track 1 -->
-
-  <div class="card">
-
-    <div class="track-icon personal"></div>
-    <h3>Love.exe stopped working</h3>
-    
-    <p>A standalone track exploring a different vibe.</p>
-
-    <audio class="track-audio" src="music/Love.exe stopped working.mp3"></audio>
-
-    <div class="cyber-player">
-      <button class="cyber-play" type="button">▶</button>
-      <div class="cyber-bar">
-        <div class="cyber-fill"></div>
-      </div>
-      <span class="cyber-time">0:00</span>
-
-      <span style="font-size:10px; opacity:0.6; letter-spacing:2px; color:var(--cyan);">
-        VOL
-      </span>
-
-      <input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
-    </div>
-  </div>
-
-  <!-- Track 2 -->
-
-  <div class="card">
-
-    <div class="track-icon personal"></div>
-    <h3>Kinetic Energy</h3>
-
-    <p>Another personal track from back in the days with many genres .</p>
-
-    <audio class="track-audio" src="music/Kinetic Energy.mp3"></audio>
-     
-    <div class="cyber-player">
-      <button class="cyber-play" type="button">▶</button>
-      <div class="cyber-bar">
-        <div class="cyber-fill"></div>
-      </div>
-      <span class="cyber-time">0:00</span>
-
-      <span style="font-size:10px; opacity:0.6; letter-spacing:2px; color:var(--cyan);">
-        VOL
-      </span>
-
-      <input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1">
-    </div>
-  </div>
-
-</div>
-
-    </div>
-
+    <div class="grid" data-render="personal-tracks"></div>
   </div>
 </section>
 
@@ -1904,82 +1670,7 @@
       Click an artwork to view it larger.
     </p>
 
-    <div class="grid" style="margin-top:26px;">
-
-      <div class="card">
-        <div class="thumb large">
-          <img src="fanart/fanart1.png" alt="Art by my sister">
-        </div>
-        <h3>The Origin</h3>
-        <p>The very first artwork for my mascot. Where it all started.</p>
-
-        <p style="font-size:13px; opacity:0.65; margin-top:-6px;">
-          Art by @ponko_pudding
-        </p>
-
-        <div style="margin-top:10px;">
-          <h3 style="font-size:16px; margin-bottom:12px;">More Versions:</h3>
-
-          <div class="sister-gallery">
-            <img src="fanart/sister1.png" alt="More artwork by my sister">
-            <img src="fanart/sister2.png" alt="More artwork by my sister">
-            <img src="fanart/sister3.png" alt="More artwork by my sister">
-	    <img src="fanart/sister4.png" alt="More artwork by my sister">
-	    <img src="fanart/sister5.png" alt="More artwork by my sister">
-          </div>
-        </div>
-
-        <p style="margin-top:12px; font-size:13px; opacity:0.6;">
-          She has created many artworks of my mascot over time.
-        </p>
-
-	<a href="https://instagram.com/ponko_pudding" target="_blank" class="fanart-btn">
-          View Artist
-        </a>
-
-      </div>
-
-      <div class="card">
-        <div class="thumb large">
-          <img src="fanart/fanart2.png" alt="Art by prophetgiro">
-        </div>
-        <h3>The Mystery</h3>
-        <p>Magical! I used it as the cover for the song Evolution.</p>
-
-        <p style="font-size:13px; opacity:0.65; margin-top:-6px;">
-          Art by @prophetgiro
-        </p>
-
-        <a href="https://instagram.com/prophetgiro" target="_blank" class="fanart-btn">
-          View Artist
-        </a>
-
-      </div>
-
-      <div class="card">
-        <div class="thumb large">
-          <img src="fanart/fanart3.png" alt="Art by eiisbaer">
-        </div>
-        <h3>The Emotion</h3>
-        <p>A mix of her outstanding horse style and my mascot — too good not to feature here.</p>
-
-        <p style="font-size:13px; opacity:0.65; margin-top:-6px;">
-          Art by @eiisbaer<br>
-          Black Horse Design by @nu._.namee
-        </p>
-		  
-	<div class="fanart-links">
-        <a href="https://instagram.com/eiisbaer" target="_blank" class="fanart-btn">
-          View eiisbaer
-        </a>
-		<a href="https://instagram.com/nu._.namee" target="_blank" class="fanart-btn">
-          View nu._.namee
-        </a>
-	</div>
-
-      </div>
-
-    </div>
+    <div class="grid" style="margin-top:26px;" data-render="fanart"></div>
 
     <div class="note">
       These are some early artworks from people close to me.
@@ -2020,17 +1711,7 @@
   	Feel free to reach out for collaborations or game projects.
 	</p>
 
-        <div style="margin-top:30px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center;">
-
-  	<a class="main-btn" href="https://ebeaty.itch.io" target="_blank">
-   	🎮 itch.io
-  	</a>
-
-  	<a class="main-btn" href="https://linktr.ee/electrobeaty" target="_blank">
-    	🌐 Linktree
-  	</a>
-
-	</div>
+        <div class="contact-links" data-render="contact-links"></div>
       </div>
     </section>
 
@@ -2057,7 +1738,138 @@
   <span id="nowPlayingText">Nothing playing</span>
 </div>
 
+<script src="portfolio-data.js"></script>
 <script defer>
+
+    /* =========================
+       CONTENT RENDERING
+    ========================= */
+    const data = window.portfolioData || {};
+
+    function escapeHtml(value = '') {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function externalAttrs(href = '') {
+      return href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+    }
+
+    function trackTitle(track) {
+      const badge = track.badge
+        ? `<span class="track-badge">- ${escapeHtml(track.badge)}</span>`
+        : '';
+      return `${escapeHtml(track.title)}${badge}`;
+    }
+
+    function playerMarkup(file) {
+      return `
+        <audio class="track-audio" src="${escapeHtml(file)}"></audio>
+        <div class="cyber-player">
+          <button class="cyber-play" type="button" aria-label="Play track">Play</button>
+          <div class="cyber-bar" role="button" tabindex="0" aria-label="Track position">
+            <div class="cyber-fill"></div>
+          </div>
+          <span class="cyber-time">0:00</span>
+          <span class="volume-label">VOL</span>
+          <input class="cyber-volume" type="range" min="0" max="1" step="0.01" value="1" aria-label="Volume">
+        </div>`;
+    }
+
+    function trackCard(track) {
+      const tags = (track.tags || [track.category]).filter(Boolean);
+      return `
+        <div class="card" data-category="${escapeHtml(track.category || '')}">
+          <div class="track-icon ${escapeHtml(track.category || 'personal')}"></div>
+          <h3>${trackTitle(track)}</h3>
+          <p>${escapeHtml(track.description)}</p>
+          ${playerMarkup(track.file)}
+          ${tags.length ? `<div class="chips">${tags.map(tag => `<span class="chip">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
+        </div>`;
+    }
+
+    function renderProjects() {
+      const target = document.querySelector('[data-render="projects"]');
+      if (!target) return;
+
+      target.innerHTML = (data.projects || []).map(project => `
+        <div class="log-entry">
+          <div class="log-date">${escapeHtml(project.status)}</div>
+          <strong>${escapeHtml(project.title)}</strong>
+          <p>${escapeHtml(project.description)}</p>
+          ${(project.links || []).length ? `
+            <div class="project-actions">
+              ${project.links.map(link => `<a href="${escapeHtml(link.href)}" class="fanart-btn"${externalAttrs(link.href)}>${escapeHtml(link.label)}</a>`).join('')}
+            </div>` : ''}
+          ${project.note ? `<div class="project-note">${escapeHtml(project.note)}</div>` : ''}
+        </div>`).join('');
+    }
+
+    function renderTracks() {
+      const featuredTarget = document.querySelector('[data-render="featured-track"]');
+      const gameTarget = document.querySelector('[data-render="game-tracks"]');
+      const personalTarget = document.querySelector('[data-render="personal-tracks"]');
+      const featured = data.featuredTrack;
+
+      if (featuredTarget && featured) {
+        featuredTarget.innerHTML = `
+          <div class="section-kicker">${escapeHtml(featured.kicker || 'Featured Track')}</div>
+          <h3>${trackTitle(featured)}</h3>
+          <p>${escapeHtml(featured.description)}</p>
+          ${playerMarkup(featured.file)}`;
+      }
+
+      if (gameTarget) gameTarget.innerHTML = (data.gameTracks || []).map(trackCard).join('');
+      if (personalTarget) personalTarget.innerHTML = (data.personalTracks || []).map(trackCard).join('');
+    }
+
+    function renderFanart() {
+      const target = document.querySelector('[data-render="fanart"]');
+      if (!target) return;
+
+      target.innerHTML = (data.fanart || []).map(item => `
+        <div class="card">
+          <div class="thumb large">
+            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}">
+          </div>
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+          <p class="art-credit">Art by ${escapeHtml(item.artist || '')}${item.credit ? `<br>${escapeHtml(item.credit)}` : ''}</p>
+          ${(item.versions || []).length ? `
+            <div class="versions-block">
+              <h3>${escapeHtml(item.versionsTitle || 'More Versions')}</h3>
+              <div class="sister-gallery">
+                ${item.versions.map(src => `<img src="${escapeHtml(src)}" alt="More artwork for ${escapeHtml(item.title)}">`).join('')}
+              </div>
+            </div>` : ''}
+          ${item.note ? `<p class="art-note">${escapeHtml(item.note)}</p>` : ''}
+          ${(item.artistLinks || []).length ? `
+            <div class="fanart-links">
+              ${item.artistLinks.map(link => `<a href="${escapeHtml(link.href)}" target="_blank" rel="noopener noreferrer" class="fanart-btn">${escapeHtml(link.label)}</a>`).join('')}
+            </div>` : ''}
+        </div>`).join('');
+    }
+
+    function renderContactLinks() {
+      const target = document.querySelector('[data-render="contact-links"]');
+      if (!target) return;
+      target.innerHTML = (data.contactLinks || [])
+        .map(link => `<a class="main-btn" href="${escapeHtml(link.href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`)
+        .join('');
+    }
+
+    function renderPortfolioContent() {
+      renderProjects();
+      renderTracks();
+      renderFanart();
+      renderContactLinks();
+    }
+
+    renderPortfolioContent();
 
     /* =========================
        BACKGROUND GENERATORS
@@ -2105,7 +1917,6 @@
     const rainToggle = document.getElementById('rainToggle');
     const soundToggle = document.getElementById('soundToggle');
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const cards = document.querySelectorAll('#music .card');
 
     let hoverSoundEnabled = false;
 
@@ -2152,7 +1963,7 @@
 
         const filter = button.dataset.filter;
 
-        cards.forEach(card => {
+        document.querySelectorAll('#music .card').forEach(card => {
           const categories = card.dataset.category || '';
           card.classList.toggle('is-hidden', filter !== 'all' && !categories.includes(filter));
         });
@@ -2196,7 +2007,7 @@ document.querySelectorAll('#music .card, #personal .card, .featured-track').forE
         const otherTitle = otherCard?.querySelector('h3');
 
         otherCard?.classList.remove('playing');
-        if (otherBtn) otherBtn.textContent = '▶';
+        if (otherBtn) otherBtn.textContent = 'Play';
         if (otherTitle?.dataset.original) {
           otherTitle.innerHTML = otherTitle.dataset.original;
         }
@@ -2207,13 +2018,13 @@ document.querySelectorAll('#music .card, #personal .card, .featured-track').forE
       title.dataset.original = title.dataset.original || title.innerHTML;
 	title.innerHTML = title.dataset.original;
 
-	nowPlayingText.textContent = 'NOW PLAYING · ' + title.textContent;
+	nowPlayingText.textContent = 'NOW PLAYING - ' + title.textContent;
 	nowPlayingBar.classList.add('show');
 
       await player.play();
 
       card.classList.add('playing');
-      playBtn.textContent = '⏸';
+      playBtn.textContent = 'Pause';
 
     } else {
       player.pause();
@@ -2225,7 +2036,7 @@ document.querySelectorAll('#music .card, #personal .card, .featured-track').forE
       }
 
       card.classList.remove('playing');
-      playBtn.textContent = '▶';
+      playBtn.textContent = 'Play';
     }
   });
 
@@ -2238,7 +2049,7 @@ document.querySelectorAll('#music .card, #personal .card, .featured-track').forE
   player.addEventListener('ended', () => {
     nowPlayingBar.classList.remove('show');
     card.classList.remove('playing');
-    playBtn.textContent = '▶';
+    playBtn.textContent = 'Play';
     fill.style.width = '0%';
     time.textContent = '0:00';
 
