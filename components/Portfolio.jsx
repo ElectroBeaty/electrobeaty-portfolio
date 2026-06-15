@@ -238,6 +238,15 @@ export function Portfolio({ content }) {
             <div className="hero-corners" />
             <div className="avatar-stage">
               <div className="soft-aura" />
+              <div className="avatar-orbit orbit-one">
+                <span />
+                <span />
+              </div>
+              <div className="avatar-orbit orbit-two">
+                <span />
+                <span />
+                <span />
+              </div>
               <div className="yin-glow" />
               <div className="avatar">
                 <img src="/profilbild.png" alt="electrobeaty mascot" />
