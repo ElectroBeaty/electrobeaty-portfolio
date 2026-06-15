@@ -238,11 +238,13 @@ export function Portfolio({ content }) {
             <div className="hero-corners" />
             <div className="avatar-stage">
               <div className="soft-aura" />
-              <div className="avatar-orbit orbit-one">
-                <span />
-                <span />
+              <div className="avatar-spectrum" aria-hidden="true">
+                {Array.from({ length: 28 }).map((_, index) => (
+                  <span key={index} />
+                ))}
               </div>
-              <div className="avatar-orbit orbit-two">
+              <div className="avatar-shards" aria-hidden="true">
+                <span />
                 <span />
                 <span />
                 <span />
