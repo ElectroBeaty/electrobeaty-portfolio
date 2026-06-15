@@ -799,6 +799,149 @@
       to { opacity: 0.82; filter: blur(0.4px); }
     }
 
+    /* Calmer avatar treatment: centered glass halo, no busy spectrum ring */
+    .avatar-stage {
+      width: min(315px, 68vw);
+      perspective: none;
+      isolation: isolate;
+    }
+
+    .soft-aura {
+      inset: -24%;
+      background:
+        radial-gradient(circle at 30% 42%, rgba(255,79,216,0.52), transparent 32%),
+        radial-gradient(circle at 72% 38%, rgba(0,229,255,0.44), transparent 34%),
+        radial-gradient(circle at 50% 76%, rgba(139,92,246,0.38), transparent 38%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 62%);
+      filter: blur(28px) saturate(1.35);
+      opacity: 0.9;
+      animation: calmAura 7s ease-in-out infinite alternate;
+    }
+
+    .yin-glow {
+      inset: -8%;
+      background:
+        conic-gradient(
+          from 135deg,
+          rgba(0,229,255,0.9),
+          rgba(255,255,255,0.22),
+          rgba(255,79,216,0.86),
+          rgba(139,92,246,0.28),
+          rgba(0,229,255,0.9)
+        );
+      opacity: 0.82;
+      filter:
+        drop-shadow(0 0 18px rgba(0,229,255,0.4))
+        drop-shadow(0 0 24px rgba(255,79,216,0.34));
+      animation: calmRing 18s linear infinite;
+      mask: radial-gradient(circle, transparent 0 53%, black 54% 66%, transparent 68%);
+      -webkit-mask: radial-gradient(circle, transparent 0 53%, black 54% 66%, transparent 68%);
+    }
+
+    .avatar-stage::before {
+      inset: -2%;
+      background:
+        conic-gradient(
+          from 220deg,
+          transparent 0 18deg,
+          rgba(0,229,255,0.78) 28deg,
+          transparent 48deg 136deg,
+          rgba(255,79,216,0.74) 154deg,
+          transparent 178deg 268deg,
+          rgba(255,255,255,0.52) 286deg,
+          transparent 306deg 360deg
+        );
+      filter: blur(1px) drop-shadow(0 0 14px rgba(0,229,255,0.34));
+      opacity: 0.72;
+      animation: calmArc 12s ease-in-out infinite alternate;
+      mask: radial-gradient(circle, transparent 0 68%, black 69% 71%, transparent 73%);
+      -webkit-mask: radial-gradient(circle, transparent 0 68%, black 69% 71%, transparent 73%);
+    }
+
+    .avatar-stage::after {
+      inset: 7%;
+      background:
+        radial-gradient(circle at 34% 22%, rgba(255,255,255,0.28), transparent 12%),
+        linear-gradient(120deg, transparent 0 39%, rgba(255,255,255,0.2) 45%, transparent 54%);
+      mix-blend-mode: screen;
+      opacity: 0.28;
+      animation: calmSweep 7s ease-in-out infinite;
+      mask: radial-gradient(circle, black 0 48%, transparent 49%);
+      -webkit-mask: radial-gradient(circle, black 0 48%, transparent 49%);
+    }
+
+    .avatar {
+      width: 76%;
+      border: 1px solid rgba(255,255,255,0.56);
+      background: rgba(255,255,255,0.06);
+      box-shadow:
+        0 0 0 1px rgba(0,229,255,0.22),
+        0 16px 55px rgba(0,0,0,0.28),
+        0 0 34px rgba(255,79,216,0.42),
+        0 0 56px rgba(0,229,255,0.25),
+        inset 0 0 24px rgba(255,255,255,0.16);
+    }
+
+    .avatar::before {
+      inset: -2px;
+      background:
+        conic-gradient(from 0deg, rgba(255,79,216,0.7), rgba(0,229,255,0.72), rgba(255,255,255,0.38), rgba(255,79,216,0.7));
+      opacity: 0.72;
+      animation: calmRing 14s linear infinite;
+      mask: radial-gradient(circle, transparent 0 79%, black 80% 83%, transparent 85%);
+      -webkit-mask: radial-gradient(circle, transparent 0 79%, black 80% 83%, transparent 85%);
+    }
+
+    .avatar::after {
+      inset: 0;
+      background:
+        radial-gradient(circle at 35% 24%, rgba(255,255,255,0.3), transparent 12%),
+        linear-gradient(125deg, transparent 0 42%, rgba(0,229,255,0.14) 48%, transparent 57%);
+      opacity: 0.45;
+      animation: none;
+    }
+
+    .hero:hover .soft-aura {
+      filter: blur(30px) saturate(1.55);
+      opacity: 1;
+    }
+
+    .hero:hover .yin-glow {
+      opacity: 0.95;
+    }
+
+    @keyframes calmAura {
+      from { transform: scale(0.98); opacity: 0.78; }
+      to { transform: scale(1.04); opacity: 0.96; }
+    }
+
+    @keyframes calmRing {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes calmArc {
+      from { transform: rotate(-8deg); opacity: 0.54; }
+      to { transform: rotate(10deg); opacity: 0.82; }
+    }
+
+    @keyframes calmSweep {
+      0%, 48% { transform: translateX(-10%) rotate(-16deg); opacity: 0; }
+      60% { opacity: 0.32; }
+      78% { transform: translateX(10%) rotate(-16deg); opacity: 0.16; }
+      100% { transform: translateX(10%) rotate(-16deg); opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .soft-aura,
+      .yin-glow,
+      .avatar-stage::before,
+      .avatar-stage::after,
+      .avatar::before,
+      .avatar::after {
+        animation: none !important;
+      }
+    }
+
     .avatar img {
       width: 100%;
       height: 100%;

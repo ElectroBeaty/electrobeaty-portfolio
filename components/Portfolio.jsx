@@ -238,17 +238,6 @@ export function Portfolio({ content }) {
             <div className="hero-corners" />
             <div className="avatar-stage">
               <div className="soft-aura" />
-              <div className="avatar-spectrum" aria-hidden="true">
-                {Array.from({ length: 28 }).map((_, index) => (
-                  <span key={index} />
-                ))}
-              </div>
-              <div className="avatar-shards" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-                <span />
-              </div>
               <div className="yin-glow" />
               <div className="avatar">
                 <img src="/profilbild.png" alt="electrobeaty mascot" />
