@@ -799,97 +799,100 @@
       to { opacity: 0.82; filter: blur(0.4px); }
     }
 
-    /* Calmer avatar treatment: centered glass halo, no busy spectrum ring */
+    /* Balanced avatar treatment: centered glass halo with stronger energy accents */
     .avatar-stage {
-      width: min(315px, 68vw);
+      width: min(326px, 70vw);
       perspective: none;
       isolation: isolate;
     }
 
     .soft-aura {
-      inset: -24%;
+      inset: -30%;
       background:
-        radial-gradient(circle at 30% 42%, rgba(255,79,216,0.52), transparent 32%),
-        radial-gradient(circle at 72% 38%, rgba(0,229,255,0.44), transparent 34%),
-        radial-gradient(circle at 50% 76%, rgba(139,92,246,0.38), transparent 38%),
+        radial-gradient(circle at 27% 43%, rgba(255,79,216,0.68), transparent 31%),
+        radial-gradient(circle at 74% 38%, rgba(0,229,255,0.58), transparent 33%),
+        radial-gradient(circle at 50% 78%, rgba(139,92,246,0.5), transparent 39%),
         radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 62%);
-      filter: blur(28px) saturate(1.35);
-      opacity: 0.9;
-      animation: calmAura 7s ease-in-out infinite alternate;
+      filter: blur(30px) saturate(1.6);
+      opacity: 0.96;
+      animation: calmAura 5.8s ease-in-out infinite alternate;
     }
 
     .yin-glow {
-      inset: -8%;
+      inset: -11%;
       background:
+        repeating-conic-gradient(from 4deg, rgba(255,255,255,0.36) 0 2deg, transparent 2deg 18deg),
         conic-gradient(
           from 135deg,
-          rgba(0,229,255,0.9),
-          rgba(255,255,255,0.22),
-          rgba(255,79,216,0.86),
-          rgba(139,92,246,0.28),
-          rgba(0,229,255,0.9)
+          rgba(0,229,255,0.98),
+          rgba(255,255,255,0.26),
+          rgba(255,79,216,0.96),
+          rgba(139,92,246,0.34),
+          rgba(0,229,255,0.98)
         );
-      opacity: 0.82;
+      opacity: 0.94;
       filter:
-        drop-shadow(0 0 18px rgba(0,229,255,0.4))
-        drop-shadow(0 0 24px rgba(255,79,216,0.34));
-      animation: calmRing 18s linear infinite;
-      mask: radial-gradient(circle, transparent 0 53%, black 54% 66%, transparent 68%);
-      -webkit-mask: radial-gradient(circle, transparent 0 53%, black 54% 66%, transparent 68%);
+        drop-shadow(0 0 22px rgba(0,229,255,0.55))
+        drop-shadow(0 0 30px rgba(255,79,216,0.48));
+      animation: calmRing 14s linear infinite, haloPulse 2.9s ease-in-out infinite alternate;
+      mask: radial-gradient(circle, transparent 0 52%, black 53% 68%, transparent 70%);
+      -webkit-mask: radial-gradient(circle, transparent 0 52%, black 53% 68%, transparent 70%);
     }
 
     .avatar-stage::before {
-      inset: -2%;
+      inset: -6%;
       background:
         conic-gradient(
           from 220deg,
-          transparent 0 18deg,
-          rgba(0,229,255,0.78) 28deg,
-          transparent 48deg 136deg,
-          rgba(255,79,216,0.74) 154deg,
-          transparent 178deg 268deg,
-          rgba(255,255,255,0.52) 286deg,
+          transparent 0 14deg,
+          rgba(0,229,255,0.95) 26deg,
+          transparent 48deg 124deg,
+          rgba(255,255,255,0.72) 140deg,
+          rgba(255,79,216,0.94) 158deg,
+          transparent 184deg 255deg,
+          rgba(128,255,229,0.78) 278deg,
           transparent 306deg 360deg
         );
-      filter: blur(1px) drop-shadow(0 0 14px rgba(0,229,255,0.34));
-      opacity: 0.72;
-      animation: calmArc 12s ease-in-out infinite alternate;
-      mask: radial-gradient(circle, transparent 0 68%, black 69% 71%, transparent 73%);
-      -webkit-mask: radial-gradient(circle, transparent 0 68%, black 69% 71%, transparent 73%);
+      filter: blur(1px) drop-shadow(0 0 20px rgba(0,229,255,0.5));
+      opacity: 0.86;
+      animation: calmArc 8.5s ease-in-out infinite alternate;
+      mask: radial-gradient(circle, transparent 0 66%, black 67% 71%, transparent 74%);
+      -webkit-mask: radial-gradient(circle, transparent 0 66%, black 67% 71%, transparent 74%);
     }
 
     .avatar-stage::after {
-      inset: 7%;
+      inset: 5%;
       background:
-        radial-gradient(circle at 34% 22%, rgba(255,255,255,0.28), transparent 12%),
-        linear-gradient(120deg, transparent 0 39%, rgba(255,255,255,0.2) 45%, transparent 54%);
+        radial-gradient(circle at 34% 22%, rgba(255,255,255,0.34), transparent 13%),
+        linear-gradient(120deg, transparent 0 37%, rgba(255,255,255,0.3) 44%, transparent 55%),
+        repeating-linear-gradient(0deg, rgba(0,229,255,0.06) 0 1px, transparent 1px 8px);
       mix-blend-mode: screen;
-      opacity: 0.28;
-      animation: calmSweep 7s ease-in-out infinite;
+      opacity: 0.38;
+      animation: calmSweep 5.4s ease-in-out infinite;
       mask: radial-gradient(circle, black 0 48%, transparent 49%);
       -webkit-mask: radial-gradient(circle, black 0 48%, transparent 49%);
     }
 
     .avatar {
-      width: 76%;
-      border: 1px solid rgba(255,255,255,0.56);
+      width: 75%;
+      border: 1px solid rgba(255,255,255,0.66);
       background: rgba(255,255,255,0.06);
       box-shadow:
-        0 0 0 1px rgba(0,229,255,0.22),
-        0 16px 55px rgba(0,0,0,0.28),
-        0 0 34px rgba(255,79,216,0.42),
-        0 0 56px rgba(0,229,255,0.25),
-        inset 0 0 24px rgba(255,255,255,0.16);
+        0 0 0 1px rgba(0,229,255,0.3),
+        0 18px 62px rgba(0,0,0,0.3),
+        0 0 42px rgba(255,79,216,0.54),
+        0 0 68px rgba(0,229,255,0.34),
+        inset 0 0 28px rgba(255,255,255,0.18);
     }
 
     .avatar::before {
       inset: -2px;
       background:
-        conic-gradient(from 0deg, rgba(255,79,216,0.7), rgba(0,229,255,0.72), rgba(255,255,255,0.38), rgba(255,79,216,0.7));
-      opacity: 0.72;
-      animation: calmRing 14s linear infinite;
-      mask: radial-gradient(circle, transparent 0 79%, black 80% 83%, transparent 85%);
-      -webkit-mask: radial-gradient(circle, transparent 0 79%, black 80% 83%, transparent 85%);
+        conic-gradient(from 0deg, rgba(255,79,216,0.82), rgba(0,229,255,0.84), rgba(255,255,255,0.5), rgba(255,79,216,0.82));
+      opacity: 0.85;
+      animation: calmRing 10s linear infinite;
+      mask: radial-gradient(circle, transparent 0 78%, black 79% 84%, transparent 86%);
+      -webkit-mask: radial-gradient(circle, transparent 0 78%, black 79% 84%, transparent 86%);
     }
 
     .avatar::after {
@@ -897,7 +900,7 @@
       background:
         radial-gradient(circle at 35% 24%, rgba(255,255,255,0.3), transparent 12%),
         linear-gradient(125deg, transparent 0 42%, rgba(0,229,255,0.14) 48%, transparent 57%);
-      opacity: 0.45;
+      opacity: 0.58;
       animation: none;
     }
 
@@ -911,8 +914,8 @@
     }
 
     @keyframes calmAura {
-      from { transform: scale(0.98); opacity: 0.78; }
-      to { transform: scale(1.04); opacity: 0.96; }
+      from { transform: scale(0.97); opacity: 0.82; }
+      to { transform: scale(1.07); opacity: 1; }
     }
 
     @keyframes calmRing {
@@ -920,15 +923,20 @@
     }
 
     @keyframes calmArc {
-      from { transform: rotate(-8deg); opacity: 0.54; }
-      to { transform: rotate(10deg); opacity: 0.82; }
+      from { transform: rotate(-12deg); opacity: 0.62; }
+      to { transform: rotate(16deg); opacity: 0.94; }
     }
 
     @keyframes calmSweep {
-      0%, 48% { transform: translateX(-10%) rotate(-16deg); opacity: 0; }
-      60% { opacity: 0.32; }
-      78% { transform: translateX(10%) rotate(-16deg); opacity: 0.16; }
-      100% { transform: translateX(10%) rotate(-16deg); opacity: 0; }
+      0%, 42% { transform: translateX(-12%) rotate(-16deg); opacity: 0; }
+      56% { opacity: 0.44; }
+      78% { transform: translateX(12%) rotate(-16deg); opacity: 0.18; }
+      100% { transform: translateX(12%) rotate(-16deg); opacity: 0; }
+    }
+
+    @keyframes haloPulse {
+      from { transform: scale(0.995); }
+      to { transform: scale(1.025); }
     }
 
     @media (prefers-reduced-motion: reduce) {
