@@ -289,6 +289,80 @@
       box-shadow: 0 0 22px rgba(0,229,255,0.12);
     }
 
+    .section-orbit {
+      position: fixed;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .section-orbit::before {
+      content: "";
+      position: absolute;
+      right: 6px;
+      top: 12px;
+      bottom: 12px;
+      width: 1px;
+      background: linear-gradient(transparent, rgba(0,229,255,0.42), rgba(255,79,216,0.32), transparent);
+      box-shadow: 0 0 14px rgba(0,229,255,0.28);
+    }
+
+    .section-orbit a {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 28px;
+      padding-right: 26px;
+      color: rgba(234,248,255,0.5);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      font-size: 11px;
+      line-height: 1;
+      pointer-events: auto;
+      text-shadow: 0 0 10px rgba(0,0,0,0.5);
+      transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .section-orbit a::after {
+      content: "";
+      position: absolute;
+      right: 1px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: rgba(234,248,255,0.35);
+      border: 1px solid rgba(0,229,255,0.42);
+      box-shadow: 0 0 10px rgba(0,229,255,0.18);
+      transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .section-orbit a:hover,
+    .section-orbit a.active {
+      color: #f8fbff;
+      transform: translateX(-4px);
+      text-shadow:
+        0 0 10px rgba(0,229,255,0.55),
+        0 0 18px rgba(255,79,216,0.28);
+    }
+
+    .section-orbit a:hover::after,
+    .section-orbit a.active::after {
+      background: var(--cyan);
+      border-color: rgba(255,255,255,0.78);
+      box-shadow:
+        0 0 12px rgba(0,229,255,0.82),
+        0 0 22px rgba(255,79,216,0.42);
+      transform: scale(1.18);
+    }
+
     /* =========================
        4. HERO SECTION
     ========================= */
@@ -1050,6 +1124,50 @@
       position: relative;
     }
 
+    section.content-section {
+      scroll-margin-top: 118px;
+      isolation: isolate;
+    }
+
+    section.content-section::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: 26px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.72), rgba(255,79,216,0.5), transparent);
+      box-shadow:
+        0 0 18px rgba(0,229,255,0.34),
+        0 0 28px rgba(255,79,216,0.18);
+      opacity: 0.66;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    section.content-section::after {
+      content: "";
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      width: 72px;
+      height: 13px;
+      border-left: 1px solid rgba(0,229,255,0.5);
+      border-top: 1px solid rgba(0,229,255,0.5);
+      pointer-events: none;
+      opacity: 0.54;
+      transition: opacity 0.25s ease, width 0.25s ease;
+    }
+
+    section.content-section:hover::before {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+
+    section.content-section:hover::after {
+      opacity: 0.9;
+      width: 118px;
+    }
+
     .quick-panels {
       padding-top: 0;
       margin-top: -35px;
@@ -1438,6 +1556,12 @@
       opacity: 0.78;
     }
 
+    @media (max-width: 1320px) {
+      .section-orbit {
+        display: none;
+      }
+    }
+
     /* =========================
        6. MOBILE
     ========================= */
@@ -1812,16 +1936,23 @@
   justify-content: center;
   align-items: center;
   z-index: 999;
+  border: 0;
+  padding: 0;
+  cursor: zoom-out;
   box-shadow:
     inset 0 0 120px rgba(0,229,255,0.15),
     inset 0 0 180px rgba(255,79,216,0.15);
+}
+
+#lightbox.show {
+  display: flex;
 }
 
 #lightbox img {
   max-width: 90%;
   max-height: 90%;
   border-radius: 20px;
-  cursor: pointer;
+  cursor: zoom-out;
 
   /* Glow entfernt */
   box-shadow: none;

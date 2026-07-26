@@ -2,6 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const SECTION_MARKERS = [
+  { id: "home", label: "Home" },
+  { id: "music", label: "Game Audio" },
+  { id: "personal", label: "Personal" },
+  { id: "fanart", label: "Fanart" },
+  { id: "about", label: "Contact" },
+];
+
 function TrackTitle({ track }) {
   return (
     <>
@@ -221,6 +229,7 @@ export function Portfolio({ content }) {
   const [activePlayback, setActivePlayback] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const [rain, setRain] = useState(true);
+  const [activeSection, setActiveSection] = useState("home");
   const adminClickCountRef = useRef(0);
   const adminClickTimerRef = useRef(null);
   const currentSrc = activePlayback?.src || "";
@@ -231,6 +240,37 @@ export function Portfolio({ content }) {
         window.clearTimeout(adminClickTimerRef.current);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    const visibility = new Map();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            visibility.set(entry.target.id, entry.intersectionRatio);
+          } else {
+            visibility.delete(entry.target.id);
+          }
+        });
+
+        const nextSection = [...visibility.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+        if (nextSection) {
+          setActiveSection(nextSection);
+        }
+      },
+      {
+        rootMargin: "-30% 0px -48% 0px",
+        threshold: [0.01, 0.18, 0.38, 0.62],
+      },
+    );
+
+    SECTION_MARKERS.forEach(({ id }) => {
+      const section = document.getElementById(id);
+      if (section) observer.observe(section);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   const filteredTracks = content.gameTracks.filter((track) => {
@@ -290,6 +330,19 @@ export function Portfolio({ content }) {
           Rain: {rain ? "ON" : "OFF"}
         </button>
       </div>
+
+      <nav className="section-orbit" aria-label="Sections">
+        {SECTION_MARKERS.map((section) => (
+          <a
+            key={section.id}
+            href={`#${section.id}`}
+            className={activeSection === section.id ? "active" : ""}
+            aria-current={activeSection === section.id ? "location" : undefined}
+          >
+            <span>{section.label}</span>
+          </a>
+        ))}
+      </nav>
 
       <main>
         <section className="hero-section" id="home">
@@ -429,9 +482,6 @@ export function Portfolio({ content }) {
             <p>
               A place for the mascot to evolve through art - featuring sketches, alternate designs,
               and fan creations.
-            </p>
-            <p style={{ opacity: 0.7, marginTop: 10, fontSize: 14 }}>
-              Click an artwork to view it larger.
             </p>
             <div className="grid" style={{ marginTop: 26 }}>
               {content.fanart.map((item) => (
