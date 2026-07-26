@@ -16,6 +16,7 @@ function Player({ track, currentSrc, setCurrentSrc }) {
   const [time, setTime] = useState("0:00");
   const [progress, setProgress] = useState(0);
   const isPlaying = currentSrc === track.file;
+  const playLabel = `${isPlaying ? "Pause" : "Play"} ${track.title}`;
 
   useEffect(() => {
     if (!isPlaying) audioRef.current?.pause();
@@ -51,7 +52,8 @@ function Player({ track, currentSrc, setCurrentSrc }) {
     if (!audio?.duration) return;
 
     const rect = event.currentTarget.getBoundingClientRect();
-    audio.currentTime = ((event.clientX - rect.left) / rect.width) * audio.duration;
+    const ratio = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+    audio.currentTime = ratio * audio.duration;
   }
 
   return (
@@ -60,6 +62,7 @@ function Player({ track, currentSrc, setCurrentSrc }) {
         ref={audioRef}
         className="track-audio"
         src={track.file}
+        preload="none"
         onTimeUpdate={(event) => {
           const audio = event.currentTarget;
           setProgress((audio.currentTime / audio.duration) * 100 || 0);
@@ -72,10 +75,22 @@ function Player({ track, currentSrc, setCurrentSrc }) {
         }}
       />
       <div className="cyber-player">
-        <button className="cyber-play" type="button" onClick={toggle}>
-          {isPlaying ? "Pause" : "Play"}
-        </button>
-        <button className="cyber-bar" type="button" onClick={seek} aria-label="Track position">
+        <button
+          className="cyber-play"
+          type="button"
+          onClick={toggle}
+          aria-label={playLabel}
+          aria-pressed={isPlaying}
+        />
+        <button
+          className="cyber-bar"
+          type="button"
+          onClick={seek}
+          aria-label={`Seek ${track.title}`}
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow={Math.round(progress)}
+        >
           <span className="cyber-fill" style={{ width: `${progress}%` }} />
         </button>
         <span className="cyber-time">{time}</span>
@@ -89,7 +104,7 @@ function Player({ track, currentSrc, setCurrentSrc }) {
           defaultValue="1"
           aria-label="Volume"
           onInput={(event) => {
-            if (audioRef.current) audioRef.current.volume = event.currentTarget.value;
+            if (audioRef.current) audioRef.current.volume = Number(event.currentTarget.value);
           }}
         />
       </div>
@@ -159,7 +174,7 @@ function Background() {
 
   return (
     <>
-      <div className="sky">
+      <div className="sky" aria-hidden="true">
         {stars.map((star) => (
           <span
             key={star.id}
@@ -173,7 +188,7 @@ function Background() {
           />
         ))}
       </div>
-      <div className="rain">
+      <div className="rain" aria-hidden="true">
         {drops.map((drop) => (
           <span
             key={drop.id}
@@ -187,7 +202,7 @@ function Background() {
           />
         ))}
       </div>
-      <div className="scanlines" />
+      <div className="scanlines" aria-hidden="true" />
     </>
   );
 }
@@ -195,13 +210,17 @@ function Background() {
 export function Portfolio({ content }) {
   const [filter, setFilter] = useState("all");
   const [currentSrc, setCurrentSrc] = useState("");
-  const [lightbox, setLightbox] = useState("");
+  const [lightbox, setLightbox] = useState(null);
   const [rain, setRain] = useState(true);
 
   const filteredTracks = content.gameTracks.filter((track) => {
     if (filter === "all") return true;
     return (track.category || "").includes(filter);
   });
+  const currentTrackTitle =
+    [...content.gameTracks, ...content.personalTracks, content.featuredTrack].find(
+      (track) => track.file === currentSrc,
+    )?.title || "Track";
 
   return (
     <>
@@ -223,7 +242,12 @@ export function Portfolio({ content }) {
       </header>
 
       <div className="settings">
-        <button className="mini-btn" type="button" onClick={() => setRain((value) => !value)}>
+        <button
+          className="mini-btn"
+          type="button"
+          onClick={() => setRain((value) => !value)}
+          aria-pressed={rain}
+        >
           Rain: {rain ? "ON" : "OFF"}
         </button>
         <a className="mini-btn" href="/admin">
@@ -367,7 +391,12 @@ export function Portfolio({ content }) {
             <div className="grid" style={{ marginTop: 26 }}>
               {content.fanart.map((item) => (
                 <div className="card" key={item.title}>
-                  <button className="thumb large" type="button" onClick={() => setLightbox(item.image)}>
+                  <button
+                    className="thumb large"
+                    type="button"
+                    onClick={() => setLightbox({ src: item.image, alt: item.title })}
+                    aria-label={`Open ${item.title}`}
+                  >
                     <img src={item.image} alt={item.title} />
                   </button>
                   <h3>{item.title}</h3>
@@ -385,8 +414,18 @@ export function Portfolio({ content }) {
                     <div className="versions-block">
                       <h3>{item.versionsTitle || "More Versions"}</h3>
                       <div className="sister-gallery">
-                        {item.versions.map((src) => (
-                          <button type="button" key={src} onClick={() => setLightbox(src)}>
+                        {item.versions.map((src, index) => (
+                          <button
+                            type="button"
+                            key={src}
+                            onClick={() =>
+                              setLightbox({
+                                src,
+                                alt: `${item.title} version ${index + 1}`,
+                              })
+                            }
+                            aria-label={`Open ${item.title} version ${index + 1}`}
+                          >
                             <img src={src} alt={`More artwork for ${item.title}`} />
                           </button>
                         ))}
@@ -462,8 +501,14 @@ export function Portfolio({ content }) {
       </footer>
 
       {lightbox ? (
-        <button id="lightbox" className="show" type="button" onClick={() => setLightbox("")}>
-          <img id="lightbox-img" src={lightbox} alt="" />
+        <button
+          id="lightbox"
+          className="show"
+          type="button"
+          onClick={() => setLightbox(null)}
+          aria-label="Close artwork preview"
+        >
+          <img id="lightbox-img" src={lightbox.src} alt={lightbox.alt} />
         </button>
       ) : null}
 
@@ -475,13 +520,7 @@ export function Portfolio({ content }) {
           <span />
         </div>
         <span id="nowPlayingText">
-          {currentSrc
-            ? `NOW PLAYING - ${
-                [...content.gameTracks, ...content.personalTracks, content.featuredTrack].find(
-                  (track) => track.file === currentSrc,
-                )?.title || "Track"
-              }`
-            : "Nothing playing"}
+          {currentSrc ? `NOW PLAYING - ${currentTrackTitle}` : "Nothing playing"}
         </span>
       </div>
     </>

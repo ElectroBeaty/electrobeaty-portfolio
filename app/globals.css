@@ -75,17 +75,19 @@
     }
 
     .rain {
-      z-index: -8;
-      opacity: 0.32;
+      z-index: 2;
+      opacity: 0.5;
       overflow: hidden;
+      mix-blend-mode: screen;
     }
 
     .drop {
       position: absolute;
       top: -20vh;
-      width: 1px;
-      height: 48px;
-      background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.75), rgba(255,255,255,0.22), transparent);
+      width: 2px;
+      height: 72px;
+      background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.95), rgba(255,255,255,0.55), transparent);
+      box-shadow: 0 0 12px rgba(0,229,255,0.72);
       animation: rainDrop linear infinite;
       transform: rotate(16deg);
     }
@@ -1509,6 +1511,9 @@
       }
 
       .settings {
+        position: absolute;
+        top: 210px;
+        bottom: auto;
         left: 18px;
         right: 18px;
         justify-content: center;
@@ -1635,16 +1640,52 @@
   background: rgba(0,229,255,0.12);
   color: white;
   cursor: pointer;
+  display: grid;
+  place-items: center;
   box-shadow: 0 0 18px rgba(0,229,255,0.35);
+}
+
+.cyber-play::before,
+.cyber-play::after {
+  content: "";
+  display: block;
+}
+
+.cyber-play::before {
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 14px solid white;
+  filter: drop-shadow(0 0 8px rgba(0,229,255,0.85));
+}
+
+.cyber-play[aria-pressed="true"] {
+  grid-template-columns: 5px 5px;
+  gap: 5px;
+  justify-content: center;
+}
+
+.cyber-play[aria-pressed="true"]::before,
+.cyber-play[aria-pressed="true"]::after {
+  width: 5px;
+  height: 18px;
+  margin-left: 0;
+  border: 0;
+  border-radius: 2px;
+  background: white;
+  filter: drop-shadow(0 0 8px rgba(255,79,216,0.85));
 }
 
 .cyber-bar {
   flex: 1;
-  height: 8px;
+  height: 10px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.15);
   overflow: hidden;
   cursor: pointer;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.35);
 }
 
 .cyber-play:active {
@@ -1658,10 +1699,14 @@
 }
 
 .cyber-fill {
+  display: block;
   width: 0%;
   height: 100%;
   background: linear-gradient(90deg, var(--cyan), var(--pink));
-  box-shadow: 0 0 14px rgba(0,229,255,0.7);
+  box-shadow:
+    0 0 14px rgba(0,229,255,0.7),
+    0 0 20px rgba(255,79,216,0.45);
+  transition: width 0.12s linear;
 }
 
 .cyber-time {
@@ -1679,6 +1724,26 @@
   background: rgba(255,255,255,0.12);
   outline: none;
   cursor: pointer;
+}
+
+@media (max-width: 520px) {
+  .cyber-player {
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+
+  .cyber-play {
+    flex: 0 0 42px;
+  }
+
+  .cyber-bar {
+    min-width: 128px;
+  }
+
+  .volume-label,
+  .cyber-volume {
+    display: none;
+  }
 }
 
 #personal {

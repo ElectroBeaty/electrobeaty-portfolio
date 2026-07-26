@@ -13,6 +13,11 @@ export const metadata = {
       "Game music, emotional tracks, project work, and fanart by electrobeaty.",
     images: ["/profilbild.png"],
   },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/profilbild.png",
+  },
 };
 
 export default function RootLayout({ children }) {

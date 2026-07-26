@@ -66,7 +66,10 @@ export async function POST(request) {
 
   const rules = UPLOAD_RULES[type];
   const extension = getExtension(file.name);
-  if (!rules.types.has(file.type) && !rules.extensions.has(extension)) {
+  const hasAllowedExtension = rules.extensions.has(extension);
+  const hasAllowedType = !file.type || rules.types.has(file.type);
+
+  if (!hasAllowedExtension || !hasAllowedType) {
     return NextResponse.json(
       { error: "Dieser Dateityp ist nicht erlaubt." },
       { status: 400 },
@@ -82,9 +85,15 @@ export async function POST(request) {
   }
 
   const filename = safeFileName(file.name || "upload");
-  const blob = await put(`uploads/${type}/${Date.now()}-${filename}`, file, {
+  const putOptions = {
     access: "public",
-  });
+  };
+
+  if (file.type) {
+    putOptions.contentType = file.type;
+  }
+
+  const blob = await put(`uploads/${type}/${Date.now()}-${filename}`, file, putOptions);
 
   return NextResponse.json({ url: blob.url });
 }
