@@ -36,7 +36,6 @@
        2. BACKGROUND EFFECTS
     ========================= */
     .sky,
-    .rain,
     .scanlines {
       position: fixed;
       inset: 0;
@@ -74,24 +73,6 @@
       box-shadow: 0 0 12px rgba(255,79,216,0.82);
     }
 
-    .rain {
-      z-index: 2;
-      opacity: 0.32;
-      overflow: hidden;
-      mix-blend-mode: screen;
-    }
-
-    .drop {
-      position: absolute;
-      top: -20vh;
-      width: 1px;
-      height: 58px;
-      background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.62), rgba(255,255,255,0.32), transparent);
-      box-shadow: 0 0 8px rgba(0,229,255,0.38);
-      animation: rainDrop linear infinite;
-      transform: rotate(16deg);
-    }
-
     .scanlines {
       z-index: -6;
       opacity: 0.12;
@@ -113,11 +94,6 @@
     @keyframes skyDrift {
       from { transform: translateY(0) translateX(0); }
       to { transform: translateY(35px) translateX(-18px); }
-    }
-
-    @keyframes rainDrop {
-      from { transform: translateY(0) translateX(0) rotate(16deg); }
-      to { transform: translateY(140vh) translateX(-120px) rotate(16deg); }
     }
 
     @keyframes sectionSignal {
@@ -323,27 +299,6 @@
         0 0 12px rgba(0,229,255,0.4),
         0 0 22px rgba(139,92,246,0.2);
       transform: translateY(-2px);
-    }
-
-    .settings {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 100;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .mini-btn {
-      border: 1px solid var(--border);
-      background: rgba(4,6,28,0.78);
-      color: white;
-      border-radius: 999px;
-      padding: 10px 14px;
-      cursor: pointer;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 0 22px rgba(0,229,255,0.12);
     }
 
     .section-orbit {
@@ -1344,28 +1299,9 @@
       transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
-    section.content-section::after {
-      content: "";
-      position: absolute;
-      left: 20px;
-      top: 20px;
-      width: 72px;
-      height: 13px;
-      border-left: 1px solid rgba(0,229,255,0.5);
-      border-top: 1px solid rgba(0,229,255,0.5);
-      pointer-events: none;
-      opacity: 0.54;
-      transition: opacity 0.25s ease, width 0.25s ease;
-    }
-
     section.content-section:hover::before {
       opacity: 1;
       transform: translateY(-1px);
-    }
-
-    section.content-section:hover::after {
-      opacity: 0.9;
-      width: 118px;
     }
 
     .quick-panels {
@@ -1387,13 +1323,6 @@
       border: 1px solid rgba(255,79,216,0.28);
       background: rgba(255,79,216,0.055);
       text-shadow: 0 0 14px rgba(255,79,216,0.45);
-    }
-
-    .section-kicker::before {
-      content: "◆";
-      color: var(--cyan);
-      font-size: 10px;
-      text-shadow: 0 0 12px rgba(0,229,255,0.8);
     }
 
     h2 {
@@ -1863,14 +1792,6 @@
         padding: 65px 18px;
       }
 
-      .settings {
-        position: absolute;
-        top: 210px;
-        bottom: auto;
-        left: 18px;
-        right: 18px;
-        justify-content: center;
-      }
     }
 
 .game-entry {

@@ -161,7 +161,6 @@ function externalLinkProps(href) {
 
 function Background() {
   const [stars, setStars] = useState([]);
-  const [drops, setDrops] = useState([]);
 
   useEffect(() => {
     const colors = ["", "cyan", "pink"];
@@ -175,16 +174,6 @@ function Background() {
         top: `${Math.random() * 100}%`,
         delay: `${Math.random() * 5}s`,
         duration: `${2.5 + Math.random() * 2}s, ${55 + Math.random() * 30}s`,
-      })),
-    );
-
-    setDrops(
-      Array.from({ length: 30 }, (_, index) => ({
-        id: index,
-        left: `${Math.random() * 110}%`,
-        duration: `${1.1 + Math.random() * 0.9}s`,
-        delay: `${Math.random() * 1.8}s`,
-        opacity: `${0.18 + Math.random() * 0.34}`,
       })),
     );
   }, []);
@@ -205,20 +194,6 @@ function Background() {
           />
         ))}
       </div>
-      <div className="rain" aria-hidden="true">
-        {drops.map((drop) => (
-          <span
-            key={drop.id}
-            className="drop"
-            style={{
-              left: drop.left,
-              animationDuration: drop.duration,
-              animationDelay: drop.delay,
-              opacity: drop.opacity,
-            }}
-          />
-        ))}
-      </div>
       <div className="scanlines" aria-hidden="true" />
     </>
   );
@@ -228,7 +203,6 @@ export function Portfolio({ content }) {
   const [filter, setFilter] = useState("all");
   const [activePlayback, setActivePlayback] = useState(null);
   const [lightbox, setLightbox] = useState(null);
-  const [rain, setRain] = useState(true);
   const [activeSection, setActiveSection] = useState("home");
   const [headerDocked, setHeaderDocked] = useState(false);
   const adminClickCountRef = useRef(0);
@@ -335,7 +309,6 @@ export function Portfolio({ content }) {
   return (
     <>
       <Background />
-      {!rain ? <style>{".rain{display:none}"}</style> : null}
 
       <header className={`top-header ${headerDocked ? "is-docked" : ""}`}>
         <div className="nav-left">
@@ -350,17 +323,6 @@ export function Portfolio({ content }) {
           <a href="#about">Contact</a>
         </div>
       </header>
-
-      <div className="settings">
-        <button
-          className="mini-btn"
-          type="button"
-          onClick={() => setRain((value) => !value)}
-          aria-pressed={rain}
-        >
-          Rain: {rain ? "ON" : "OFF"}
-        </button>
-      </div>
 
       <nav className="section-orbit" aria-label="Sections">
         <div className="section-readout" aria-hidden="true">
