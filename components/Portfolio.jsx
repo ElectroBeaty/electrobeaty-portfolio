@@ -230,6 +230,7 @@ export function Portfolio({ content }) {
   const [lightbox, setLightbox] = useState(null);
   const [rain, setRain] = useState(true);
   const [activeSection, setActiveSection] = useState("home");
+  const [headerDocked, setHeaderDocked] = useState(false);
   const adminClickCountRef = useRef(0);
   const adminClickTimerRef = useRef(null);
   const currentSrc = activePlayback?.src || "";
@@ -273,6 +274,31 @@ export function Portfolio({ content }) {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    let animationFrame = null;
+
+    function updateHeaderDock() {
+      animationFrame = null;
+      setHeaderDocked(window.scrollY > 90);
+    }
+
+    function handleScroll() {
+      if (animationFrame === null) {
+        animationFrame = window.requestAnimationFrame(updateHeaderDock);
+      }
+    }
+
+    updateHeaderDock();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (animationFrame !== null) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, []);
+
   const filteredTracks = content.gameTracks.filter((track) => {
     if (filter === "all") return true;
     return (track.category || "").includes(filter);
@@ -286,8 +312,6 @@ export function Portfolio({ content }) {
     SECTION_MARKERS.findIndex((section) => section.id === activeSection),
   );
   const activeSectionData = SECTION_MARKERS[activeSectionIndex] || SECTION_MARKERS[0];
-  const activeSectionProgress =
-    SECTION_MARKERS.length > 1 ? (activeSectionIndex / (SECTION_MARKERS.length - 1)) * 100 : 0;
 
   function handleLogoClick(event) {
     if (adminClickTimerRef.current) {
@@ -313,7 +337,7 @@ export function Portfolio({ content }) {
       <Background />
       {!rain ? <style>{".rain{display:none}"}</style> : null}
 
-      <header className="top-header">
+      <header className={`top-header ${headerDocked ? "is-docked" : ""}`}>
         <div className="nav-left">
           <a href="#home">Home</a>
           <a href="#music">Tracks</a>
@@ -338,11 +362,7 @@ export function Portfolio({ content }) {
         </button>
       </div>
 
-      <nav
-        className="section-orbit"
-        aria-label="Sections"
-        style={{ "--section-progress": `${activeSectionProgress}%` }}
-      >
+      <nav className="section-orbit" aria-label="Sections">
         <div className="section-readout" aria-hidden="true">
           <span>Area</span>
           <strong>{activeSectionData.label}</strong>
