@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const SECTION_MARKERS = [
   { id: "home", label: "Home" },
-  { id: "music", label: "Game Audio" },
+  { id: "music", label: "Game Audio", navLabel: "Tracks" },
   { id: "personal", label: "Personal" },
   { id: "fanart", label: "Fanart" },
   { id: "about", label: "Contact" },
@@ -356,7 +356,7 @@ export function Portfolio({ content }) {
               aria-current={activeSection === section.id ? "location" : undefined}
               data-step={String(index + 1).padStart(2, "0")}
             >
-              <span>{section.label}</span>
+              <span>{section.navLabel || section.label}</span>
             </a>
           ))}
         </div>
