@@ -215,7 +215,9 @@
       place-items: center;
       line-height: 0;
       z-index: 3;
-      pointer-events: none;
+      width: 360px;
+      height: 76px;
+      pointer-events: auto;
     }
 
     .top-logo:hover img {

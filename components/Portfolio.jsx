@@ -221,7 +221,17 @@ export function Portfolio({ content }) {
   const [activePlayback, setActivePlayback] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const [rain, setRain] = useState(true);
+  const adminClickCountRef = useRef(0);
+  const adminClickTimerRef = useRef(null);
   const currentSrc = activePlayback?.src || "";
+
+  useEffect(() => {
+    return () => {
+      if (adminClickTimerRef.current) {
+        window.clearTimeout(adminClickTimerRef.current);
+      }
+    };
+  }, []);
 
   const filteredTracks = content.gameTracks.filter((track) => {
     if (filter === "all") return true;
@@ -231,6 +241,25 @@ export function Portfolio({ content }) {
     [...content.gameTracks, ...content.personalTracks, content.featuredTrack].find(
       (track) => track.file === currentSrc,
     )?.title || "Track";
+
+  function handleLogoClick(event) {
+    if (adminClickTimerRef.current) {
+      window.clearTimeout(adminClickTimerRef.current);
+    }
+
+    adminClickCountRef.current += 1;
+
+    if (adminClickCountRef.current >= 5) {
+      event.preventDefault();
+      adminClickCountRef.current = 0;
+      window.location.assign("/admin");
+      return;
+    }
+
+    adminClickTimerRef.current = window.setTimeout(() => {
+      adminClickCountRef.current = 0;
+    }, 2400);
+  }
 
   return (
     <>
@@ -242,7 +271,7 @@ export function Portfolio({ content }) {
           <a href="#home">Home</a>
           <a href="#music">Tracks</a>
         </div>
-        <a className="top-logo" href="#home" aria-label="ElectroBeaty Home">
+        <a className="top-logo" href="#home" aria-label="ElectroBeaty Home" onClick={handleLogoClick}>
           <img src="/electrobeaty-logo.png" alt="ElectroBeaty Logo" />
         </a>
         <div className="nav-right">
@@ -260,9 +289,6 @@ export function Portfolio({ content }) {
         >
           Rain: {rain ? "ON" : "OFF"}
         </button>
-        <a className="mini-btn" href="/admin">
-          Admin
-        </a>
       </div>
 
       <main>
