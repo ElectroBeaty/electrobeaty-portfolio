@@ -11,15 +11,19 @@ function TrackTitle({ track }) {
   );
 }
 
-function Player({ track, currentSrc, setCurrentSrc }) {
+function Player({ track, playerId, activePlayback, setActivePlayback }) {
   const audioRef = useRef(null);
   const [time, setTime] = useState("0:00");
   const [progress, setProgress] = useState(0);
-  const isPlaying = currentSrc === track.file;
+  const isPlaying = activePlayback?.playerId === playerId;
   const playLabel = `${isPlaying ? "Pause" : "Play"} ${track.title}`;
 
   useEffect(() => {
-    if (!isPlaying) audioRef.current?.pause();
+    if (!isPlaying) {
+      audioRef.current?.pause();
+      setProgress(0);
+      setTime("0:00");
+    }
   }, [isPlaying]);
 
   function formatTime(seconds) {
@@ -35,15 +39,15 @@ function Player({ track, currentSrc, setCurrentSrc }) {
 
     if (isPlaying) {
       audio.pause();
-      setCurrentSrc("");
+      setActivePlayback(null);
       return;
     }
 
     try {
-      setCurrentSrc(track.file);
+      setActivePlayback({ src: track.file, playerId });
       await audio.play();
     } catch {
-      setCurrentSrc("");
+      setActivePlayback(null);
     }
   }
 
@@ -71,7 +75,7 @@ function Player({ track, currentSrc, setCurrentSrc }) {
         onEnded={() => {
           setProgress(0);
           setTime("0:00");
-          setCurrentSrc("");
+          setActivePlayback((current) => (current?.playerId === playerId ? null : current));
         }}
       />
       <div className="cyber-player">
@@ -112,7 +116,7 @@ function Player({ track, currentSrc, setCurrentSrc }) {
   );
 }
 
-function TrackCard({ track, currentSrc, setCurrentSrc }) {
+function TrackCard({ track, playerId, currentSrc, activePlayback, setActivePlayback }) {
   const tags = track.tags || (track.category ? [track.category] : []);
 
   return (
@@ -122,7 +126,12 @@ function TrackCard({ track, currentSrc, setCurrentSrc }) {
         <TrackTitle track={track} />
       </h3>
       <p>{track.description}</p>
-      <Player track={track} currentSrc={currentSrc} setCurrentSrc={setCurrentSrc} />
+      <Player
+        track={track}
+        playerId={playerId}
+        activePlayback={activePlayback}
+        setActivePlayback={setActivePlayback}
+      />
       {tags.length ? (
         <div className="chips">
           {tags.map((tag) => (
@@ -209,9 +218,10 @@ function Background() {
 
 export function Portfolio({ content }) {
   const [filter, setFilter] = useState("all");
-  const [currentSrc, setCurrentSrc] = useState("");
+  const [activePlayback, setActivePlayback] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const [rain, setRain] = useState(true);
+  const currentSrc = activePlayback?.src || "";
 
   const filteredTracks = content.gameTracks.filter((track) => {
     if (filter === "all") return true;
@@ -324,7 +334,12 @@ export function Portfolio({ content }) {
               <TrackTitle track={content.featuredTrack} />
             </h3>
             <p>{content.featuredTrack.description}</p>
-            <Player track={content.featuredTrack} currentSrc={currentSrc} setCurrentSrc={setCurrentSrc} />
+            <Player
+              track={content.featuredTrack}
+              playerId="featured-track"
+              activePlayback={activePlayback}
+              setActivePlayback={setActivePlayback}
+            />
           </div>
           <div className="filters">
             {[
@@ -350,8 +365,10 @@ export function Portfolio({ content }) {
               <TrackCard
                 key={`${track.title}-${track.file}`}
                 track={track}
+                playerId={`game-${track.title}-${track.file}`}
                 currentSrc={currentSrc}
-                setCurrentSrc={setCurrentSrc}
+                activePlayback={activePlayback}
+                setActivePlayback={setActivePlayback}
               />
             ))}
           </div>
@@ -369,8 +386,10 @@ export function Portfolio({ content }) {
                 <TrackCard
                   key={`${track.title}-${track.file}`}
                   track={track}
+                  playerId={`personal-${track.title}-${track.file}`}
                   currentSrc={currentSrc}
-                  setCurrentSrc={setCurrentSrc}
+                  activePlayback={activePlayback}
+                  setActivePlayback={setActivePlayback}
                 />
               ))}
             </div>
