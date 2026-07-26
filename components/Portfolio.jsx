@@ -281,6 +281,13 @@ export function Portfolio({ content }) {
     [...content.gameTracks, ...content.personalTracks, content.featuredTrack].find(
       (track) => track.file === currentSrc,
     )?.title || "Track";
+  const activeSectionIndex = Math.max(
+    0,
+    SECTION_MARKERS.findIndex((section) => section.id === activeSection),
+  );
+  const activeSectionData = SECTION_MARKERS[activeSectionIndex] || SECTION_MARKERS[0];
+  const activeSectionProgress =
+    SECTION_MARKERS.length > 1 ? (activeSectionIndex / (SECTION_MARKERS.length - 1)) * 100 : 0;
 
   function handleLogoClick(event) {
     if (adminClickTimerRef.current) {
@@ -331,17 +338,28 @@ export function Portfolio({ content }) {
         </button>
       </div>
 
-      <nav className="section-orbit" aria-label="Sections">
-        {SECTION_MARKERS.map((section) => (
-          <a
-            key={section.id}
-            href={`#${section.id}`}
-            className={activeSection === section.id ? "active" : ""}
-            aria-current={activeSection === section.id ? "location" : undefined}
-          >
-            <span>{section.label}</span>
-          </a>
-        ))}
+      <nav
+        className="section-orbit"
+        aria-label="Sections"
+        style={{ "--section-progress": `${activeSectionProgress}%` }}
+      >
+        <div className="section-readout" aria-hidden="true">
+          <span>Area</span>
+          <strong>{activeSectionData.label}</strong>
+        </div>
+        <div className="section-links">
+          {SECTION_MARKERS.map((section, index) => (
+            <a
+              key={section.id}
+              href={`#${section.id}`}
+              className={activeSection === section.id ? "active" : ""}
+              aria-current={activeSection === section.id ? "location" : undefined}
+              data-step={String(index + 1).padStart(2, "0")}
+            >
+              <span>{section.label}</span>
+            </a>
+          ))}
+        </div>
       </nav>
 
       <main>
