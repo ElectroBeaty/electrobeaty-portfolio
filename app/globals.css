@@ -76,7 +76,7 @@
 
     .rain {
       z-index: 2;
-      opacity: 0.5;
+      opacity: 0.32;
       overflow: hidden;
       mix-blend-mode: screen;
     }
@@ -84,10 +84,10 @@
     .drop {
       position: absolute;
       top: -20vh;
-      width: 2px;
-      height: 72px;
-      background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.95), rgba(255,255,255,0.55), transparent);
-      box-shadow: 0 0 12px rgba(0,229,255,0.72);
+      width: 1px;
+      height: 58px;
+      background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.62), rgba(255,255,255,0.32), transparent);
+      box-shadow: 0 0 8px rgba(0,229,255,0.38);
       animation: rainDrop linear infinite;
       transform: rotate(16deg);
     }
@@ -1640,8 +1640,9 @@
   background: rgba(0,229,255,0.12);
   color: white;
   cursor: pointer;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow: 0 0 18px rgba(0,229,255,0.35);
 }
 
@@ -1652,30 +1653,41 @@
 }
 
 .cyber-play::before {
+  position: absolute;
+  left: calc(50% + 2px);
+  top: 50%;
   width: 0;
   height: 0;
-  margin-left: 3px;
   border-top: 9px solid transparent;
   border-bottom: 9px solid transparent;
   border-left: 14px solid white;
   filter: drop-shadow(0 0 8px rgba(0,229,255,0.85));
+  transform: translate(-50%, -50%);
 }
 
 .cyber-play[aria-pressed="true"] {
-  grid-template-columns: 5px 5px;
-  gap: 5px;
-  justify-content: center;
+  gap: 0;
 }
 
 .cyber-play[aria-pressed="true"]::before,
 .cyber-play[aria-pressed="true"]::after {
+  position: absolute;
+  top: 50%;
   width: 5px;
   height: 18px;
-  margin-left: 0;
   border: 0;
   border-radius: 2px;
   background: white;
   filter: drop-shadow(0 0 8px rgba(255,79,216,0.85));
+  transform: translate(-50%, -50%);
+}
+
+.cyber-play[aria-pressed="true"]::before {
+  left: calc(50% - 4px);
+}
+
+.cyber-play[aria-pressed="true"]::after {
+  left: calc(50% + 4px);
 }
 
 .cyber-bar {

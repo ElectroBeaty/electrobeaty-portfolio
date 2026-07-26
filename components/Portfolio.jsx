@@ -162,12 +162,12 @@ function Background() {
     );
 
     setDrops(
-      Array.from({ length: 48 }, (_, index) => ({
+      Array.from({ length: 30 }, (_, index) => ({
         id: index,
         left: `${Math.random() * 110}%`,
-        duration: `${0.85 + Math.random() * 0.7}s`,
-        delay: `${Math.random() * 1.4}s`,
-        opacity: `${0.35 + Math.random() * 0.6}`,
+        duration: `${1.1 + Math.random() * 0.9}s`,
+        delay: `${Math.random() * 1.8}s`,
+        opacity: `${0.18 + Math.random() * 0.34}`,
       })),
     );
   }, []);
@@ -273,7 +273,7 @@ export function Portfolio({ content }) {
               <span className="hud">Commissions</span>
             </div>
             <div className="subtitle">Composer | Game Audio | Rhythm Gamer</div>
-            <div className="japanese-line">Dreams never end</div>
+            <div className="japanese-line">夢は終わらない</div>
             <p>
               Music for games with a focus on emotion, atmosphere, and a touch of anime vibe.
               Sometimes calm and emotional, sometimes energetic - I like exploring different styles
