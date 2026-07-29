@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 const SECTION_MARKERS = [
   { id: "home", label: "Home" },
   { id: "label", label: "Label Feature", navLabel: "Label" },
+  { id: "news", label: "News" },
   { id: "music", label: "Game Audio", navLabel: "Tracks" },
   { id: "personal", label: "Personal" },
   { id: "fanart", label: "Fanart" },
@@ -424,40 +425,43 @@ export function Portfolio({ content }) {
           </div>
         </section>
 
-        <div className="home-projects" aria-label="Project news">
-          <div className="news-log-panel">
-            <div className="news-log-header">
-              <span>News</span>
-              <strong>Projects & Work</strong>
-            </div>
-            <div className="home-project-grid">
-              {content.projects.map((project) => (
-                <article className="log-entry" key={project.title}>
-                  <div className="log-date">{project.status}</div>
-                  <div className="log-entry-main">
-                    <strong>{project.title}</strong>
-                    <p>{project.description}</p>
-                    {project.links?.length ? (
-                      <div className="project-actions">
-                        {project.links.map((link) => (
-                          <a
-                            className="fanart-btn"
-                            href={link.href}
-                            key={link.href}
-                            {...externalLinkProps(link.href)}
-                          >
-                            {link.label}
-                          </a>
-                        ))}
-                      </div>
-                    ) : null}
-                    {project.note ? <div className="project-note">{project.note}</div> : null}
-                  </div>
-                </article>
-              ))}
+        <section className="content-section news-section" id="news">
+          <div className="section-kicker">News</div>
+          <h2>Projects & Work</h2>
+          <p className="news-section-copy">
+            Current project notes, small updates, and work in progress.
+          </p>
+          <div className="news-projects" aria-label="Project news">
+            <div className="news-log-panel">
+              <div className="news-project-grid">
+                {content.projects.map((project) => (
+                  <article className="log-entry" key={project.title}>
+                    <div className="log-date">{project.status}</div>
+                    <div className="log-entry-main">
+                      <strong>{project.title}</strong>
+                      <p>{project.description}</p>
+                      {project.links?.length ? (
+                        <div className="project-actions">
+                          {project.links.map((link) => (
+                            <a
+                              className="fanart-btn"
+                              href={link.href}
+                              key={link.href}
+                              {...externalLinkProps(link.href)}
+                            >
+                              {link.label}
+                            </a>
+                          ))}
+                        </div>
+                      ) : null}
+                      {project.note ? <div className="project-note">{project.note}</div> : null}
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
         <section className="content-section" id="music">
           <div className="section-kicker">Portfolio</div>
