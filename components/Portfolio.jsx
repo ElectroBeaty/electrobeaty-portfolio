@@ -373,17 +373,50 @@ export function Portfolio({ content }) {
           </div>
         </section>
 
+        <div className="home-projects">
+          <details>
+            <summary>Show Projects & Work</summary>
+            <div className="home-project-grid">
+              {content.projects.map((project) => (
+                <div className="log-entry" key={project.title}>
+                  <div className="log-date">{project.status}</div>
+                  <strong>{project.title}</strong>
+                  <p>{project.description}</p>
+                  {project.links?.length ? (
+                    <div className="project-actions">
+                      {project.links.map((link) => (
+                        <a
+                          className="fanart-btn"
+                          href={link.href}
+                          key={link.href}
+                          {...externalLinkProps(link.href)}
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
+                  {project.note ? <div className="project-note">{project.note}</div> : null}
+                </div>
+              ))}
+            </div>
+          </details>
+        </div>
+
         <section className="content-section label-feature-section" id="label">
           <div className="section-kicker">Label Feature</div>
           <div className="label-feature-panel">
             <div className="label-feature-copy">
               <span className="label-feature-eyebrow">Compilation Appearance</span>
-              <h2>MOE DANCEFLOOR</h2>
+              <h2>MOE ★ DANCEFLOOR</h2>
               <p>
-                I am happy to be part of SVPACYBERIA's compilation named MOE DANCEFLOOR.
+                I am so happy to participate in this compilation called{" "}
+                <strong>MOE ★ DANCEFLOOR</strong> and therefore being part of the
+                SVPACYBERIA Label.
               </p>
               <p className="label-feature-note">
-                This sits alongside my own music projects as a new label release milestone.
+                CDs and T-shirts are also available and can be purchased on the SVPACYBERIA
+                website. Please check out the other producers on the compilation too.
               </p>
               <div className="label-feature-actions" aria-label="MOE DANCEFLOOR links">
                 <a
@@ -420,36 +453,6 @@ export function Portfolio({ content }) {
             </div>
           </div>
         </section>
-
-        <div className="home-projects">
-          <details>
-            <summary>Show Projects & Work</summary>
-            <div className="home-project-grid">
-              {content.projects.map((project) => (
-                <div className="log-entry" key={project.title}>
-                  <div className="log-date">{project.status}</div>
-                  <strong>{project.title}</strong>
-                  <p>{project.description}</p>
-                  {project.links?.length ? (
-                    <div className="project-actions">
-                      {project.links.map((link) => (
-                        <a
-                          className="fanart-btn"
-                          href={link.href}
-                          key={link.href}
-                          {...externalLinkProps(link.href)}
-                        >
-                          {link.label}
-                        </a>
-                      ))}
-                    </div>
-                  ) : null}
-                  {project.note ? <div className="project-note">{project.note}</div> : null}
-                </div>
-              ))}
-            </div>
-          </details>
-        </div>
 
         <section className="content-section" id="music">
           <div className="section-kicker">Portfolio</div>
