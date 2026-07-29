@@ -511,7 +511,7 @@ export function Portfolio({ content }) {
           <h2>Personal Tracks</h2>
           <div className="panel">
             <p style={{ opacity: 0.7, marginBottom: 24 }}>
-              Tracks outside of game projects - more experimental, emotional or just created for fun.
+              You can listen to the full versions of these personal tracks on all major platforms.
             </p>
             <div className="grid">
               {content.personalTracks.map((track) => (

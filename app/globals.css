@@ -303,11 +303,11 @@
 
     .section-orbit {
       position: fixed;
-      right: 16px;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
       z-index: 70;
-      width: 142px;
+      width: 150px;
       padding: 12px;
       display: flex;
       flex-direction: column;
@@ -420,15 +420,15 @@
     .section-orbit a {
       position: relative;
       display: grid;
-      grid-template-columns: 22px minmax(0, 1fr);
+      grid-template-columns: 20px minmax(0, 1fr);
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       min-height: 32px;
-      padding: 7px 22px 7px 4px;
+      padding: 7px 18px 7px 3px;
       color: rgba(234,248,255,0.56);
       text-decoration: none;
       text-transform: uppercase;
-      letter-spacing: 1.25px;
+      letter-spacing: 0.85px;
       font-size: 11px;
       line-height: 1;
       pointer-events: auto;
@@ -465,10 +465,10 @@
 
     .section-orbit a span {
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       white-space: nowrap;
       text-align: right;
-      text-overflow: ellipsis;
+      text-overflow: clip;
     }
 
     .section-orbit a span::after {
@@ -1280,7 +1280,7 @@
     }
 
     section.content-section {
-      scroll-margin-top: 118px;
+      scroll-margin-top: 56px;
       isolation: isolate;
     }
 
