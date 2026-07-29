@@ -373,36 +373,6 @@ export function Portfolio({ content }) {
           </div>
         </section>
 
-        <div className="home-projects">
-          <details>
-            <summary>Show Projects & Work</summary>
-            <div className="home-project-grid">
-              {content.projects.map((project) => (
-                <div className="log-entry" key={project.title}>
-                  <div className="log-date">{project.status}</div>
-                  <strong>{project.title}</strong>
-                  <p>{project.description}</p>
-                  {project.links?.length ? (
-                    <div className="project-actions">
-                      {project.links.map((link) => (
-                        <a
-                          className="fanart-btn"
-                          href={link.href}
-                          key={link.href}
-                          {...externalLinkProps(link.href)}
-                        >
-                          {link.label}
-                        </a>
-                      ))}
-                    </div>
-                  ) : null}
-                  {project.note ? <div className="project-note">{project.note}</div> : null}
-                </div>
-              ))}
-            </div>
-          </details>
-        </div>
-
         <section className="content-section label-feature-section" id="label">
           <div className="section-kicker">Label Feature</div>
           <div className="label-feature-panel">
@@ -453,6 +423,41 @@ export function Portfolio({ content }) {
             </div>
           </div>
         </section>
+
+        <div className="home-projects" aria-label="Project news">
+          <div className="news-log-panel">
+            <div className="news-log-header">
+              <span>News</span>
+              <strong>Projects & Work</strong>
+            </div>
+            <div className="home-project-grid">
+              {content.projects.map((project) => (
+                <article className="log-entry" key={project.title}>
+                  <div className="log-date">{project.status}</div>
+                  <div className="log-entry-main">
+                    <strong>{project.title}</strong>
+                    <p>{project.description}</p>
+                    {project.links?.length ? (
+                      <div className="project-actions">
+                        {project.links.map((link) => (
+                          <a
+                            className="fanart-btn"
+                            href={link.href}
+                            key={link.href}
+                            {...externalLinkProps(link.href)}
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
+                    ) : null}
+                    {project.note ? <div className="project-note">{project.note}</div> : null}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
 
         <section className="content-section" id="music">
           <div className="section-kicker">Portfolio</div>
