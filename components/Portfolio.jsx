@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const SECTION_MARKERS = [
   { id: "home", label: "Home" },
+  { id: "label", label: "Label Feature", navLabel: "Label" },
   { id: "music", label: "Game Audio", navLabel: "Tracks" },
   { id: "personal", label: "Personal" },
   { id: "fanart", label: "Fanart" },
@@ -368,6 +370,54 @@ export function Portfolio({ content }) {
               Sometimes calm and emotional, sometimes energetic - I like exploring different styles
               and finding the sound that fits the world.
             </p>
+          </div>
+        </section>
+
+        <section className="content-section label-feature-section" id="label">
+          <div className="section-kicker">Label Feature</div>
+          <div className="label-feature-panel">
+            <div className="label-feature-copy">
+              <span className="label-feature-eyebrow">Compilation Appearance</span>
+              <h2>MOE DANCEFLOOR</h2>
+              <p>
+                I am happy to be part of SVPACYBERIA's compilation named MOE DANCEFLOOR.
+              </p>
+              <p className="label-feature-note">
+                This sits alongside my own music projects as a new label release milestone.
+              </p>
+              <div className="label-feature-actions" aria-label="MOE DANCEFLOOR links">
+                <a
+                  className="label-feature-btn"
+                  href="https://svpacyberia.com/"
+                  {...externalLinkProps("https://svpacyberia.com/")}
+                >
+                  Website
+                </a>
+                <a
+                  className="label-feature-btn"
+                  href="https://www.youtube.com/watch?v=6Y6hAbJBZ-0"
+                  {...externalLinkProps("https://www.youtube.com/watch?v=6Y6hAbJBZ-0")}
+                >
+                  Compilation
+                </a>
+                <a
+                  className="label-feature-btn"
+                  href="https://www.youtube.com/watch?v=pKTEYVjGaG4"
+                  {...externalLinkProps("https://www.youtube.com/watch?v=pKTEYVjGaG4")}
+                >
+                  My Song
+                </a>
+              </div>
+            </div>
+            <div className="label-feature-art">
+              <Image
+                src="/moe-dancefloor.jpg"
+                alt="MOE DANCEFLOOR compilation artwork"
+                width={1280}
+                height={720}
+                sizes="(max-width: 760px) 100vw, 560px"
+              />
+            </div>
           </div>
         </section>
 

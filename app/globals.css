@@ -1373,6 +1373,136 @@
         inset 0 0 32px rgba(255,255,255,0.08);
     }
 
+    .label-feature-panel {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(340px, 1.15fr);
+      gap: 30px;
+      align-items: center;
+      overflow: hidden;
+      padding: 34px;
+      border: 2px solid rgba(120,190,255,0.4);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(0,229,255,0.18), transparent 32%),
+        radial-gradient(circle at 84% 62%, rgba(255,79,216,0.16), transparent 34%),
+        linear-gradient(135deg, rgba(8,11,58,0.86), rgba(13,7,42,0.72));
+      box-shadow:
+        0 0 62px rgba(0,229,255,0.16),
+        0 0 90px rgba(139,92,246,0.16),
+        inset 0 0 34px rgba(255,255,255,0.035);
+      backdrop-filter: blur(18px);
+    }
+
+    .label-feature-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0,229,255,0.035) 1px, transparent 1px),
+        linear-gradient(rgba(255,79,216,0.026) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      opacity: 0.75;
+    }
+
+    .label-feature-copy,
+    .label-feature-art {
+      position: relative;
+      z-index: 1;
+    }
+
+    .label-feature-eyebrow {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 7px 11px;
+      border: 1px solid rgba(0,229,255,0.34);
+      border-radius: 999px;
+      color: var(--cyan);
+      background: rgba(0,229,255,0.07);
+      font-size: 11px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      text-shadow: 0 0 12px rgba(0,229,255,0.48);
+    }
+
+    .label-feature-copy h2 {
+      margin-bottom: 16px;
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 0.95;
+    }
+
+    .label-feature-copy p {
+      color: var(--soft);
+      font-size: 19px;
+      line-height: 1.65;
+      text-align: left;
+    }
+
+    .label-feature-note {
+      margin-top: 14px;
+      opacity: 0.72;
+      font-size: 15px !important;
+    }
+
+    .label-feature-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      margin-top: 24px;
+    }
+
+    .label-feature-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid rgba(0,229,255,0.46);
+      border-radius: 999px;
+      color: #f3fbff;
+      background:
+        linear-gradient(135deg, rgba(0,229,255,0.14), rgba(255,79,216,0.11)),
+        rgba(5,8,36,0.76);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-decoration: none;
+      text-transform: uppercase;
+      box-shadow:
+        0 0 18px rgba(0,229,255,0.16),
+        inset 0 0 18px rgba(255,255,255,0.035);
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, color 0.22s ease;
+    }
+
+    .label-feature-btn:hover {
+      color: white;
+      border-color: rgba(255,79,216,0.72);
+      box-shadow:
+        0 0 24px rgba(0,229,255,0.28),
+        0 0 34px rgba(255,79,216,0.22),
+        inset 0 0 22px rgba(255,255,255,0.055);
+      transform: translateY(-2px);
+    }
+
+    .label-feature-art {
+      overflow: hidden;
+      border: 1px solid rgba(0,229,255,0.35);
+      border-radius: 22px;
+      background: rgba(4,6,28,0.6);
+      box-shadow:
+        0 0 34px rgba(0,229,255,0.2),
+        0 0 42px rgba(255,79,216,0.16);
+    }
+
+    .label-feature-art img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
     .panel::before,
 	.panel::after {
   	display: none;
@@ -1790,6 +1920,34 @@
       section.content-section,
       .quick-panels {
         padding: 65px 18px;
+      }
+
+      .label-feature-panel {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        padding: 22px;
+      }
+
+      .label-feature-copy h2 {
+        font-size: 34px;
+      }
+
+      .label-feature-copy p {
+        font-size: 17px;
+        text-align: center;
+      }
+
+      .label-feature-copy {
+        text-align: center;
+      }
+
+      .label-feature-actions {
+        justify-content: center;
+      }
+
+      .label-feature-btn {
+        flex: 1 1 100%;
+        max-width: 280px;
       }
 
     }
