@@ -113,7 +113,7 @@ function TrackEditor({ title, tracks, onChange, personal = false }) {
       <p className="admin-muted">Neue Songs erscheinen nach dem Speichern automatisch auf der Website.</p>
       <div className="admin-list">
         {tracks.map((track, index) => (
-          <div className="admin-item" key={`${track.title}-${index}`}>
+          <div className="admin-item" key={`track-${index}`}>
             <div className="admin-row">
               <Field label="Titel" value={track.title} onChange={(value) => update(index, { title: value })} />
               <Field
@@ -174,7 +174,7 @@ function ProjectEditor({ projects, onChange }) {
       <h2>Projects</h2>
       <div className="admin-list">
         {projects.map((project, index) => (
-          <div className="admin-item" key={`${project.title}-${index}`}>
+          <div className="admin-item" key={`project-${index}`}>
             <div className="admin-row">
               <Field label="Status" value={project.status} onChange={(value) => update(index, { status: value })} />
               <Field label="Titel" value={project.title} onChange={(value) => update(index, { title: value })} />
@@ -229,7 +229,7 @@ function FanartEditor({ fanart, onChange }) {
       <h2>Fanart</h2>
       <div className="admin-list">
         {fanart.map((item, index) => (
-          <div className="admin-item" key={`${item.title}-${index}`}>
+          <div className="admin-item" key={`fanart-${index}`}>
             <div className="admin-row">
               <Field label="Titel" value={item.title} onChange={(value) => update(index, { title: value })} />
               <Field label="Artist" value={item.artist} onChange={(value) => update(index, { artist: value })} />
@@ -307,7 +307,7 @@ function ContactEditor({ links, onChange }) {
       <h2>Contact Links</h2>
       <div className="admin-list">
         {links.map((link, index) => (
-          <div className="admin-item" key={`${link.label}-${index}`}>
+          <div className="admin-item" key={`contact-${index}`}>
             <div className="admin-row">
               <Field
                 label="Label"
