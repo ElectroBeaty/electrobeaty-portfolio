@@ -1858,11 +1858,11 @@
       }
 
       .top-logo img {
-  	width: 210px;
-  	height: auto;
-  	max-height: 90px;
-  	object-fit: contain;
-  	margin: -14px auto -10px;
+        width: min(330px, 92vw);
+        height: auto;
+        max-height: 170px;
+        object-fit: contain;
+        margin: -48px auto -42px;
       }
 
 	.nav-left {
