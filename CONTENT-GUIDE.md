@@ -20,13 +20,15 @@ Lege lokal eine `.env.local` Datei an. Auf Vercel setzt du dieselben Variablen i
 
 ```env
 ADMIN_PASSWORD=dein-sicheres-passwort
-BLOB_READ_WRITE_TOKEN=dein-vercel-blob-token
+BLOB_STORE_ID=store_deine-vercel-blob-store-id
 NEXT_PUBLIC_SITE_URL=https://deine-domain.vercel.app
 ```
 
 `ADMIN_PASSWORD` schuetzt `/admin`.
 
-`BLOB_READ_WRITE_TOKEN` ermoeglicht Uploads und speichert die Portfolio-Inhalte in Vercel Blob.
+`BLOB_STORE_ID` kommt automatisch von der verbundenen Vercel Blob Datenbank. Vercel nutzt dafuer OIDC im Deployment. Lokal kannst du die Werte mit `vercel env pull .env.local --yes` ziehen.
+
+Falls dein Blob Store noch den alten Read-Write-Token nutzt, funktioniert `BLOB_READ_WRITE_TOKEN` weiterhin als Fallback.
 
 `NEXT_PUBLIC_SITE_URL` sorgt fuer saubere Link-Vorschauen, wenn du die Website teilst.
 

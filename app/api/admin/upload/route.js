@@ -1,6 +1,7 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { getBlobStorageErrorMessage } from "@/lib/blob-storage";
 
 const UPLOAD_RULES = {
   audio: {
@@ -49,13 +50,6 @@ export async function POST(request) {
     return NextResponse.json({ error: "Nicht eingeloggt." }, { status: 401 });
   }
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return NextResponse.json(
-      { error: "BLOB_READ_WRITE_TOKEN ist noch nicht gesetzt." },
-      { status: 500 },
-    );
-  }
-
   const formData = await request.formData();
   const file = formData.get("file");
   const type = formData.get("type") === "image" ? "image" : "audio";
@@ -93,7 +87,14 @@ export async function POST(request) {
     putOptions.contentType = file.type;
   }
 
-  const blob = await put(`uploads/${type}/${Date.now()}-${filename}`, file, putOptions);
+  try {
+    const blob = await put(`uploads/${type}/${Date.now()}-${filename}`, file, putOptions);
 
-  return NextResponse.json({ url: blob.url });
+    return NextResponse.json({ url: blob.url });
+  } catch (error) {
+    return NextResponse.json(
+      { error: getBlobStorageErrorMessage(error, "Upload fehlgeschlagen.") },
+      { status: 500 },
+    );
+  }
 }
