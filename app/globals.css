@@ -531,10 +531,10 @@
     }
 
     .hero {
-      width: min(940px, 92vw);
+      width: min(820px, 92vw);
       margin-top: 24px;
-      padding: 68px 64px;
-      border-radius: 42px;
+      padding: 54px 48px 50px;
+      border-radius: 36px;
       isolation: isolate;
 
       background: linear-gradient(
@@ -1192,8 +1192,8 @@
     }
 
     .cyber-avatar-stage {
-      width: min(420px, 78vw);
-      margin-bottom: 42px;
+      width: min(500px, 80vw);
+      margin-bottom: 32px;
     }
 
     .cyber-avatar-stage::before,
