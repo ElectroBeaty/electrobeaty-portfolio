@@ -147,6 +147,46 @@ function SelectField({ label, value, options, onChange }) {
   );
 }
 
+function IconPickerField({ label, value, color, onChange }) {
+  return (
+    <div className="admin-field admin-icon-field">
+      <label>{label}</label>
+      <div className="admin-icon-control">
+        <select value={value || ""} onChange={(event) => onChange(event.target.value)}>
+          {categoryIconOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <span
+          className="admin-icon-selected"
+          style={{ "--track-color": color }}
+          aria-label={`Preview: ${value}`}
+        >
+          <CategoryIcon icon={value} />
+        </span>
+      </div>
+      <div className="admin-icon-palette" aria-label="Icon previews">
+        {categoryIconOptions.map((option) => (
+          <button
+            className={`admin-icon-choice ${value === option.value ? "active" : ""}`}
+            type="button"
+            key={option.value}
+            title={option.label}
+            aria-label={option.label}
+            aria-pressed={value === option.value}
+            style={{ "--track-color": color }}
+            onClick={() => onChange(option.value)}
+          >
+            <CategoryIcon icon={option.value} />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function UploadButton({ type, onUploaded }) {
   const [status, setStatus] = useState("");
 
@@ -344,10 +384,10 @@ function CategoryEditor({ categories, onChange }) {
               </div>
             </div>
             <div className="admin-row">
-              <SelectField
+              <IconPickerField
                 label="Icon"
                 value={category.icon}
-                options={categoryIconOptions}
+                color={category.color}
                 onChange={(value) => update(index, { icon: value })}
               />
               <Field
