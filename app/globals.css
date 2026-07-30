@@ -1191,6 +1191,127 @@
       display: block;
     }
 
+    .cyber-avatar-stage {
+      width: min(420px, 78vw);
+      margin-bottom: 42px;
+    }
+
+    .cyber-avatar-stage::before,
+    .cyber-avatar-stage::after,
+    .cyber-avatar-stage .yin-glow,
+    .cyber-avatar-stage .avatar::before,
+    .cyber-avatar-stage .avatar::after {
+      display: none;
+    }
+
+    .cyber-avatar-stage .soft-aura {
+      inset: -20%;
+      opacity: 0.9;
+      filter: blur(34px) saturate(1.55);
+      background:
+        radial-gradient(circle at 26% 40%, rgba(211,76,255,0.48), transparent 34%),
+        radial-gradient(circle at 72% 45%, rgba(56,217,255,0.42), transparent 36%),
+        radial-gradient(circle at 50% 74%, rgba(78,123,255,0.24), transparent 42%);
+      animation: calmAura 5.8s ease-in-out infinite alternate;
+    }
+
+    .cyber-profile-ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      z-index: 3;
+      filter:
+        drop-shadow(0 0 8px rgba(80,130,255,0.42))
+        drop-shadow(0 0 18px rgba(180,60,255,0.2));
+      pointer-events: none;
+    }
+
+    .cyber-avatar-stage .avatar {
+      width: 47%;
+      z-index: 5;
+      border: 2px solid rgba(255,255,255,0.14);
+      background: #11172f;
+      box-shadow:
+        0 0 0 5px rgba(53,190,255,0.08),
+        0 12px 42px rgba(0,0,0,0.45),
+        0 0 28px rgba(211,76,255,0.24);
+    }
+
+    .profile-ring-spin-cw {
+      transform-origin: 50% 50%;
+      animation: profileRingSpinCw 15s linear infinite;
+    }
+
+    .profile-ring-spin-ccw {
+      transform-origin: 50% 50%;
+      animation: profileRingSpinCcw 21s linear infinite;
+    }
+
+    .profile-ring-spin-fast {
+      transform-origin: 50% 50%;
+      animation: profileRingSpinCw 8s linear infinite;
+    }
+
+    .profile-ring-spin-slow {
+      transform-origin: 50% 50%;
+      animation: profileRingSpinCcw 33s linear infinite;
+    }
+
+    .profile-ring-pulse {
+      animation: profileRingPulse 3.2s ease-in-out infinite;
+    }
+
+    .profile-ring-pulse-delayed {
+      animation: profileRingPulse 3.2s ease-in-out 1.3s infinite;
+    }
+
+    .profile-ring-flicker {
+      animation: profileRingSpinCcw 21s linear infinite, profileRingFlicker 5.6s steps(1, end) infinite;
+    }
+
+    .profile-ring-orbit-dot {
+      transform-origin: 50% 50%;
+      animation: profileRingSpinCw 6.8s linear infinite;
+    }
+
+    .profile-ring-orbit-reverse {
+      animation: profileRingSpinCcw 10.5s linear infinite;
+    }
+
+    @keyframes profileRingSpinCw {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes profileRingSpinCcw {
+      to { transform: rotate(-360deg); }
+    }
+
+    @keyframes profileRingPulse {
+      0%, 100% { opacity: 0.48; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes profileRingFlicker {
+      0%, 18%, 22%, 64%, 100% { opacity: 0.8; }
+      19%, 21%, 65% { opacity: 0.25; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cyber-profile-ring *,
+      .profile-ring-spin-cw,
+      .profile-ring-spin-ccw,
+      .profile-ring-spin-fast,
+      .profile-ring-spin-slow,
+      .profile-ring-pulse,
+      .profile-ring-pulse-delayed,
+      .profile-ring-flicker,
+      .profile-ring-orbit-dot {
+        animation: none !important;
+      }
+    }
+
     .hud-row {
       display: flex;
       gap: 14px;

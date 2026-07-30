@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { CyberProfileRing } from "@/components/CyberProfileRing";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import {
   defaultTrackCategories,
@@ -454,9 +455,9 @@ export function Portfolio({ content }) {
           <div className="hero">
             <div className="hero-frame" />
             <div className="hero-corners" />
-            <div className="avatar-stage">
+            <div className="avatar-stage cyber-avatar-stage">
               <div className="soft-aura" />
-              <div className="yin-glow" />
+              <CyberProfileRing />
               <div className="avatar">
                 <img src="/profilbild.png" alt="electrobeaty mascot" />
               </div>
