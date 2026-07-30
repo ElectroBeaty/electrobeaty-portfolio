@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { CategoryIcon } from "@/components/CategoryIcon";
 import {
   defaultTrackCategories,
-  getCategoryInitials,
   labelFromCategoryValue,
   normalizeCategoryColor,
+  normalizeCategory,
   normalizeCategoryValue,
 } from "@/lib/categories";
 
@@ -149,10 +150,11 @@ function TrackCard({ track, category, playerId, currentSrc, activePlayback, setA
     >
       <div
         className="track-icon"
-        data-initials={getCategoryInitials(categoryLabel, track.category)}
         style={{ "--track-color": categoryColor }}
         aria-label={categoryLabel}
-      />
+      >
+        <CategoryIcon icon={category?.icon} />
+      </div>
       <h3>
         <TrackTitle track={track} />
       </h3>
@@ -192,6 +194,7 @@ function getCategory(categories, value) {
       value: normalizedValue,
       label: labelFromCategoryValue(normalizedValue),
       color: "#00e5ff",
+      icon: "sparkle",
     }
   );
 }
@@ -288,11 +291,9 @@ export function Portfolio({ content }) {
   const adminClickCountRef = useRef(0);
   const adminClickTimerRef = useRef(null);
   const currentSrc = activePlayback?.src || "";
-  const categories = (content.categories?.length ? content.categories : defaultTrackCategories).map((category) => ({
-    ...category,
-    value: normalizeCategoryValue(category.value || category.label),
-    color: normalizeCategoryColor(category.color),
-  }));
+  const categories = (content.categories?.length ? content.categories : defaultTrackCategories).map((category) =>
+    normalizeCategory(category),
+  );
   const gameCategoryValues = new Set(content.gameTracks.map((track) => normalizeCategoryValue(track.category)));
   const gameCategories = categories.filter((category) => gameCategoryValues.has(category.value));
 

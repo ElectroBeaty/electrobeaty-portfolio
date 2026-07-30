@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { CategoryIcon } from "@/components/CategoryIcon";
 import { seedPortfolioContent } from "@/lib/seed-data";
 import {
+  categoryIconOptions,
   defaultTrackCategories,
-  getCategoryInitials,
   labelFromCategoryValue,
   normalizeCategoryColor,
+  normalizeCategoryIcon,
   normalizeCategoryValue,
   slugifyCategory,
 } from "@/lib/categories";
@@ -23,6 +25,7 @@ const emptyCategory = {
   label: "New Category",
   value: "new-category",
   color: "#00e5ff",
+  icon: "sparkle",
 };
 
 const emptyProject = {
@@ -97,12 +100,14 @@ function normalizeAdminCategories(categories) {
   source.forEach((category, index) => {
     const value = normalizeCategoryValue(category.value || category.label, `category-${index + 1}`);
     const label = String(category.label || labelFromCategoryValue(value)).trim() || labelFromCategoryValue(value);
+    const defaultCategory = defaultTrackCategories.find((item) => item.value === value);
 
     merged.set(value, {
       ...merged.get(value),
       label,
       value,
       color: normalizeCategoryColor(category.color),
+      icon: normalizeCategoryIcon(category.icon, defaultCategory?.icon || "sparkle"),
     });
   });
 
@@ -331,19 +336,27 @@ function CategoryEditor({ categories, onChange }) {
                 style={{ "--track-color": category.color }}
                 aria-hidden="true"
               >
-                {getCategoryInitials(category.label, category.value)}
+                <CategoryIcon icon={category.icon} />
               </div>
               <div className="admin-row">
                 <Field label="Name" value={category.label} onChange={(value) => update(index, { label: value })} />
                 <Field label="Slug" value={category.value} onChange={(value) => update(index, { value })} />
               </div>
             </div>
-            <Field
-              label="Farbe"
-              type="color"
-              value={category.color}
-              onChange={(value) => update(index, { color: value })}
-            />
+            <div className="admin-row">
+              <SelectField
+                label="Icon"
+                value={category.icon}
+                options={categoryIconOptions}
+                onChange={(value) => update(index, { icon: value })}
+              />
+              <Field
+                label="Farbe"
+                type="color"
+                value={category.color}
+                onChange={(value) => update(index, { color: value })}
+              />
+            </div>
             <div className="admin-actions">
               <button
                 className="admin-danger"

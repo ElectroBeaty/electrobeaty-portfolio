@@ -1667,16 +1667,21 @@
       position: relative;
       z-index: 1;
       overflow: hidden;
-      font-size: 24px;
     }
 
-.track-icon::after {
-  content: attr(data-initials);
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  color: white;
-  text-shadow: 0 0 10px rgba(255,255,255,0.7);
+.category-symbol {
+  width: 28px;
+  height: 28px;
+  color: #f8fbff;
+  filter:
+    drop-shadow(0 0 8px color-mix(in srgb, var(--track-color, var(--cyan)) 70%, transparent))
+    drop-shadow(0 0 14px rgba(255,255,255,0.2));
+  position: relative;
+  z-index: 1;
+}
+
+.track-icon .category-symbol {
+  transform: translateY(1px);
 }
 
 .track-list-actions {
@@ -2738,10 +2743,6 @@ select {
   display: grid;
   place-items: center;
   color: white;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.3px;
-  text-shadow: 0 0 10px rgba(255,255,255,0.65);
   background:
     radial-gradient(circle at 30% 25%, rgba(255,255,255,0.2), transparent 32%),
     linear-gradient(135deg, color-mix(in srgb, var(--track-color, var(--cyan)) 70%, transparent), rgba(139,92,246,0.34), rgba(255,79,216,0.16));

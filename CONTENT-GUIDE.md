@@ -50,6 +50,7 @@ Im Admin gibt es den Tab `Categories`.
 
 - `Name` ist der sichtbare Name auf der Website.
 - `Slug` ist der interne Wert fuer Filter und Zuordnung.
+- `Icon` steuert das Symbol im Track-Badge.
 - `Farbe` steuert den Track-Akzent, den Filter-Button und das kleine Track-Badge.
 
 Neue Songs bekommen ihre Kategorie danach ueber ein Auswahlfeld. Dadurch entstehen keine leeren Kategorie-Badges mehr durch Tippfehler.
