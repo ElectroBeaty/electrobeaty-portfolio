@@ -2,6 +2,13 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import {
+  defaultTrackCategories,
+  getCategoryInitials,
+  labelFromCategoryValue,
+  normalizeCategoryColor,
+  normalizeCategoryValue,
+} from "@/lib/categories";
 
 const SECTION_MARKERS = [
   { id: "home", label: "Home" },
@@ -12,6 +19,8 @@ const SECTION_MARKERS = [
   { id: "fanart", label: "Fanart" },
   { id: "about", label: "Contact" },
 ];
+const DESKTOP_TRACK_PREVIEW_COUNT = 6;
+const MOBILE_TRACK_PREVIEW_COUNT = 3;
 
 function TrackTitle({ track }) {
   return (
@@ -127,12 +136,23 @@ function Player({ track, playerId, activePlayback, setActivePlayback }) {
   );
 }
 
-function TrackCard({ track, playerId, currentSrc, activePlayback, setActivePlayback }) {
-  const tags = track.tags || (track.category ? [track.category] : []);
+function TrackCard({ track, category, playerId, currentSrc, activePlayback, setActivePlayback }) {
+  const categoryLabel = category?.label || labelFromCategoryValue(track.category);
+  const categoryColor = normalizeCategoryColor(category?.color);
+  const tags = track.tags?.length ? track.tags : [categoryLabel];
 
   return (
-    <div className={`card ${currentSrc === track.file ? "playing" : ""}`} data-category={track.category || ""}>
-      <div className={`track-icon ${track.category || "personal"}`} />
+    <div
+      className={`card ${currentSrc === track.file ? "playing" : ""}`}
+      data-category={track.category || ""}
+      style={{ "--track-color": categoryColor }}
+    >
+      <div
+        className="track-icon"
+        data-initials={getCategoryInitials(categoryLabel, track.category)}
+        style={{ "--track-color": categoryColor }}
+        aria-label={categoryLabel}
+      />
       <h3>
         <TrackTitle track={track} />
       </h3>
@@ -160,6 +180,60 @@ function externalLinkProps(href) {
   return typeof href === "string" && href.startsWith("http")
     ? { target: "_blank", rel: "noopener noreferrer" }
     : {};
+}
+
+function getCategory(categories, value) {
+  const normalizedValue = normalizeCategoryValue(value);
+  const defaultCategory = defaultTrackCategories.find((category) => category.value === normalizedValue);
+
+  return (
+    categories.find((category) => category.value === normalizedValue) ||
+    defaultCategory || {
+      value: normalizedValue,
+      label: labelFromCategoryValue(normalizedValue),
+      color: "#00e5ff",
+    }
+  );
+}
+
+function TrackGrid({
+  tracks,
+  categories,
+  previewLimit,
+  showAll,
+  onToggleShowAll,
+  idPrefix,
+  currentSrc,
+  activePlayback,
+  setActivePlayback,
+}) {
+  const visibleTracks = showAll ? tracks : tracks.slice(0, previewLimit);
+  const hasMore = tracks.length > previewLimit;
+
+  return (
+    <>
+      <div className="grid track-grid">
+        {visibleTracks.map((track) => (
+          <TrackCard
+            key={`${track.title}-${track.file}`}
+            track={track}
+            category={getCategory(categories, track.category)}
+            playerId={`${idPrefix}-${track.title}-${track.file}`}
+            currentSrc={currentSrc}
+            activePlayback={activePlayback}
+            setActivePlayback={setActivePlayback}
+          />
+        ))}
+      </div>
+      {hasMore ? (
+        <div className="track-list-actions">
+          <button className="view-all-btn" type="button" onClick={onToggleShowAll}>
+            {showAll ? "Show less" : `View all ${tracks.length} tracks`}
+          </button>
+        </div>
+      ) : null}
+    </>
+  );
 }
 
 function Background() {
@@ -208,9 +282,19 @@ export function Portfolio({ content }) {
   const [lightbox, setLightbox] = useState(null);
   const [activeSection, setActiveSection] = useState("home");
   const [headerDocked, setHeaderDocked] = useState(false);
+  const [showAllGameTracks, setShowAllGameTracks] = useState(false);
+  const [showAllPersonalTracks, setShowAllPersonalTracks] = useState(false);
+  const [trackPreviewLimit, setTrackPreviewLimit] = useState(DESKTOP_TRACK_PREVIEW_COUNT);
   const adminClickCountRef = useRef(0);
   const adminClickTimerRef = useRef(null);
   const currentSrc = activePlayback?.src || "";
+  const categories = (content.categories?.length ? content.categories : defaultTrackCategories).map((category) => ({
+    ...category,
+    value: normalizeCategoryValue(category.value || category.label),
+    color: normalizeCategoryColor(category.color),
+  }));
+  const gameCategoryValues = new Set(content.gameTracks.map((track) => normalizeCategoryValue(track.category)));
+  const gameCategories = categories.filter((category) => gameCategoryValues.has(category.value));
 
   useEffect(() => {
     return () => {
@@ -219,6 +303,23 @@ export function Portfolio({ content }) {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 760px)");
+
+    function updatePreviewLimit() {
+      setTrackPreviewLimit(mediaQuery.matches ? MOBILE_TRACK_PREVIEW_COUNT : DESKTOP_TRACK_PREVIEW_COUNT);
+    }
+
+    updatePreviewLimit();
+    mediaQuery.addEventListener("change", updatePreviewLimit);
+
+    return () => mediaQuery.removeEventListener("change", updatePreviewLimit);
+  }, []);
+
+  useEffect(() => {
+    setShowAllGameTracks(false);
+  }, [filter]);
 
   useEffect(() => {
     const visibility = new Map();
@@ -278,7 +379,7 @@ export function Portfolio({ content }) {
 
   const filteredTracks = content.gameTracks.filter((track) => {
     if (filter === "all") return true;
-    return (track.category || "").includes(filter);
+    return normalizeCategoryValue(track.category) === filter;
   });
   const currentTrackTitle =
     [...content.gameTracks, ...content.personalTracks, content.featuredTrack].find(
@@ -483,36 +584,30 @@ export function Portfolio({ content }) {
             />
           </div>
           <div className="filters">
-            {[
-              ["all", "All"],
-              ["combat", "Combat"],
-              ["ambient", "Atmosphere"],
-              ["menu", "Menu"],
-              ["story", "Story"],
-            ].map(([value, label]) => (
+            {[{ value: "all", label: "All", color: "#00e5ff" }, ...gameCategories].map((category) => (
               <button
-                className={`filter-btn ${filter === value ? "active" : ""}`}
-                data-filter={value}
+                className={`filter-btn ${filter === category.value ? "active" : ""}`}
+                data-filter={category.value}
                 type="button"
-                key={value}
-                onClick={() => setFilter(value)}
+                key={category.value}
+                style={{ "--track-color": normalizeCategoryColor(category.color) }}
+                onClick={() => setFilter(category.value)}
               >
-                {label}
+                {category.label}
               </button>
             ))}
           </div>
-          <div className="grid">
-            {filteredTracks.map((track) => (
-              <TrackCard
-                key={`${track.title}-${track.file}`}
-                track={track}
-                playerId={`game-${track.title}-${track.file}`}
-                currentSrc={currentSrc}
-                activePlayback={activePlayback}
-                setActivePlayback={setActivePlayback}
-              />
-            ))}
-          </div>
+          <TrackGrid
+            tracks={filteredTracks}
+            categories={categories}
+            previewLimit={trackPreviewLimit}
+            showAll={showAllGameTracks}
+            onToggleShowAll={() => setShowAllGameTracks((value) => !value)}
+            idPrefix="game"
+            currentSrc={currentSrc}
+            activePlayback={activePlayback}
+            setActivePlayback={setActivePlayback}
+          />
         </section>
 
         <section className="content-section" id="personal">
@@ -522,18 +617,17 @@ export function Portfolio({ content }) {
             <p style={{ opacity: 0.7, marginBottom: 24 }}>
               You can listen to the full versions of these personal tracks on all major platforms.
             </p>
-            <div className="grid">
-              {content.personalTracks.map((track) => (
-                <TrackCard
-                  key={`${track.title}-${track.file}`}
-                  track={track}
-                  playerId={`personal-${track.title}-${track.file}`}
-                  currentSrc={currentSrc}
-                  activePlayback={activePlayback}
-                  setActivePlayback={setActivePlayback}
-                />
-              ))}
-            </div>
+            <TrackGrid
+              tracks={content.personalTracks}
+              categories={categories}
+              previewLimit={trackPreviewLimit}
+              showAll={showAllPersonalTracks}
+              onToggleShowAll={() => setShowAllPersonalTracks((value) => !value)}
+              idPrefix="personal"
+              currentSrc={currentSrc}
+              activePlayback={activePlayback}
+              setActivePlayback={setActivePlayback}
+            />
           </div>
         </section>
 

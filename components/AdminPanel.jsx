@@ -2,6 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { seedPortfolioContent } from "@/lib/seed-data";
+import {
+  defaultTrackCategories,
+  getCategoryInitials,
+  labelFromCategoryValue,
+  normalizeCategoryColor,
+  normalizeCategoryValue,
+  slugifyCategory,
+} from "@/lib/categories";
 
 const emptyTrack = {
   title: "New Track",
@@ -9,6 +17,12 @@ const emptyTrack = {
   file: "",
   category: "combat",
   tags: ["Combat"],
+};
+
+const emptyCategory = {
+  label: "New Category",
+  value: "new-category",
+  color: "#00e5ff",
 };
 
 const emptyProject = {
@@ -43,6 +57,63 @@ function joinList(value) {
   return Array.isArray(value) ? value.join(", ") : "";
 }
 
+function hasOwnKey(source, key) {
+  return Object.prototype.hasOwnProperty.call(source, key);
+}
+
+function getCategoryLabel(categories, value) {
+  const normalizedValue = normalizeCategoryValue(value);
+  return (
+    categories.find((category) => category.value === normalizedValue)?.label ||
+    labelFromCategoryValue(normalizedValue)
+  );
+}
+
+function getUniqueCategoryValue(value, categories, currentIndex, fallback = "category") {
+  const usedValues = new Set(
+    categories
+      .map((category, index) =>
+        index === currentIndex ? null : normalizeCategoryValue(category.value || category.label),
+      )
+      .filter(Boolean),
+  );
+  const baseValue = normalizeCategoryValue(value, fallback);
+  let nextValue = baseValue;
+  let counter = 2;
+
+  while (usedValues.has(nextValue)) {
+    nextValue = `${baseValue}-${counter}`;
+    counter += 1;
+  }
+
+  return nextValue;
+}
+
+function normalizeAdminCategories(categories) {
+  const source = Array.isArray(categories) && categories.length ? categories : defaultTrackCategories;
+
+  const merged = new Map();
+
+  source.forEach((category, index) => {
+    const value = normalizeCategoryValue(category.value || category.label, `category-${index + 1}`);
+    const label = String(category.label || labelFromCategoryValue(value)).trim() || labelFromCategoryValue(value);
+
+    merged.set(value, {
+      ...merged.get(value),
+      label,
+      value,
+      color: normalizeCategoryColor(category.color),
+    });
+  });
+
+  return [...merged.values()];
+}
+
+function shouldSyncCategorySlug(category) {
+  const labelSlug = slugifyCategory(category.label);
+  return category.value === labelSlug || category.value.startsWith(`${labelSlug}-`);
+}
+
 function Field({ label, value, onChange, textarea = false, type = "text" }) {
   return (
     <div className="admin-field">
@@ -52,6 +123,21 @@ function Field({ label, value, onChange, textarea = false, type = "text" }) {
       ) : (
         <input type={type} value={value || ""} onChange={(event) => onChange(event.target.value)} />
       )}
+    </div>
+  );
+}
+
+function SelectField({ label, value, options, onChange }) {
+  return (
+    <div className="admin-field">
+      <label>{label}</label>
+      <select value={value || ""} onChange={(event) => onChange(event.target.value)}>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
@@ -98,9 +184,16 @@ function UploadButton({ type, onUploaded }) {
   );
 }
 
-function TrackEditor({ title, tracks, onChange, personal = false }) {
+function TrackEditor({ title, tracks, categories, onChange, personal = false }) {
   function update(index, patch) {
     onChange(tracks.map((track, itemIndex) => (itemIndex === index ? { ...track, ...patch } : track)));
+  }
+
+  function updateCategory(index, value) {
+    update(index, {
+      category: value,
+      tags: [getCategoryLabel(categories, value)],
+    });
   }
 
   function remove(index) {
@@ -116,15 +209,11 @@ function TrackEditor({ title, tracks, onChange, personal = false }) {
           <div className="admin-item" key={`track-${index}`}>
             <div className="admin-row">
               <Field label="Titel" value={track.title} onChange={(value) => update(index, { title: value })} />
-              <Field
+              <SelectField
                 label="Kategorie"
                 value={track.category}
-                onChange={(value) =>
-                  update(index, {
-                    category: value,
-                    tags: personal ? track.tags : [value.charAt(0).toUpperCase() + value.slice(1)],
-                  })
-                }
+                options={categories}
+                onChange={(value) => updateCategory(index, value)}
               />
             </div>
             <Field
@@ -155,9 +244,122 @@ function TrackEditor({ title, tracks, onChange, personal = false }) {
         <button
           className="admin-small-btn"
           type="button"
-          onClick={() => onChange([...tracks, { ...emptyTrack, category: personal ? "personal" : "combat" }])}
+          onClick={() => {
+            const category = personal ? "personal" : categories[0]?.value || "combat";
+            onChange([
+              ...tracks,
+              {
+                ...emptyTrack,
+                category,
+                tags: [getCategoryLabel(categories, category)],
+              },
+            ]);
+          }}
         >
           Add track
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function CategoryEditor({ categories, onChange }) {
+  function update(index, patch) {
+    const current = categories[index];
+    const nextCategory = {
+      ...current,
+      ...patch,
+    };
+
+    if (hasOwnKey(patch, "label") && shouldSyncCategorySlug(current)) {
+      nextCategory.value = getUniqueCategoryValue(patch.label, categories, index, current.value);
+    }
+
+    if (hasOwnKey(patch, "value")) {
+      nextCategory.value = getUniqueCategoryValue(patch.value, categories, index, current.value);
+    }
+
+    nextCategory.color = normalizeCategoryColor(nextCategory.color);
+
+    onChange(
+      categories.map((category, itemIndex) => (itemIndex === index ? nextCategory : category)),
+      {
+        from: current.value,
+        to: nextCategory.value,
+        label: nextCategory.label,
+      },
+    );
+  }
+
+  function addCategory() {
+    const usedValues = new Set(categories.map((category) => category.value));
+    let label = emptyCategory.label;
+    let value = emptyCategory.value;
+    let counter = 2;
+
+    while (usedValues.has(value)) {
+      label = `${emptyCategory.label} ${counter}`;
+      value = slugifyCategory(label);
+      counter += 1;
+    }
+
+    onChange([...categories, { ...emptyCategory, label, value }]);
+  }
+
+  function remove(index) {
+    const current = categories[index];
+    const nextCategories = categories.filter((_, itemIndex) => itemIndex !== index);
+    const fallbackCategory = nextCategories[0] || defaultTrackCategories[0];
+
+    onChange(nextCategories, {
+      from: current.value,
+      to: fallbackCategory.value,
+      label: fallbackCategory.label,
+    });
+  }
+
+  return (
+    <section className="admin-editor">
+      <h2>Categories</h2>
+      <p className="admin-muted">Categories control the track filters, card badges, and accent colors.</p>
+      <div className="admin-list">
+        {categories.map((category, index) => (
+          <div className="admin-item" key={`category-${index}`}>
+            <div className="admin-category-row">
+              <div
+                className="admin-category-preview"
+                style={{ "--track-color": category.color }}
+                aria-hidden="true"
+              >
+                {getCategoryInitials(category.label, category.value)}
+              </div>
+              <div className="admin-row">
+                <Field label="Name" value={category.label} onChange={(value) => update(index, { label: value })} />
+                <Field label="Slug" value={category.value} onChange={(value) => update(index, { value })} />
+              </div>
+            </div>
+            <Field
+              label="Farbe"
+              type="color"
+              value={category.color}
+              onChange={(value) => update(index, { color: value })}
+            />
+            <div className="admin-actions">
+              <button
+                className="admin-danger"
+                type="button"
+                onClick={() => remove(index)}
+                disabled={categories.length <= 1}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="admin-actions">
+        <button className="admin-small-btn" type="button" onClick={addCategory}>
+          Add category
         </button>
       </div>
     </section>
@@ -281,7 +483,15 @@ function FanartEditor({ fanart, onChange }) {
   );
 }
 
-function FeaturedEditor({ track, onChange }) {
+function FeaturedEditor({ track, categories, onChange }) {
+  function updateCategory(value) {
+    onChange({
+      ...track,
+      category: value,
+      tags: [getCategoryLabel(categories, value)],
+    });
+  }
+
   return (
     <section className="admin-editor">
       <h2>Featured Track</h2>
@@ -289,6 +499,12 @@ function FeaturedEditor({ track, onChange }) {
         <Field label="Kicker" value={track.kicker} onChange={(value) => onChange({ ...track, kicker: value })} />
         <Field label="Titel" value={track.title} onChange={(value) => onChange({ ...track, title: value })} />
       </div>
+      <SelectField
+        label="Kategorie"
+        value={track.category}
+        options={categories}
+        onChange={updateCategory}
+      />
       <Field
         label="Beschreibung"
         value={track.description}
@@ -342,12 +558,14 @@ export function AdminPanel() {
   const [content, setContent] = useState(clone(seedPortfolioContent));
   const [tab, setTab] = useState("tracks");
   const [status, setStatus] = useState("");
+  const categories = normalizeAdminCategories(content.categories);
 
   const tabs = useMemo(
     () => [
       ["tracks", "Game Tracks"],
       ["personal", "Personal Tracks"],
       ["featured", "Featured"],
+      ["categories", "Categories"],
       ["projects", "Projects"],
       ["fanart", "Fanart"],
       ["contact", "Contact"],
@@ -400,6 +618,32 @@ export function AdminPanel() {
     }
     setContent(result.content);
     setStatus("Saved. Public page updates within about a minute.");
+  }
+
+  function applyCategoryChange(nextCategories, change) {
+    setContent((current) => {
+      const normalizedCategories = normalizeAdminCategories(nextCategories);
+      const targetValue = change?.to || normalizedCategories[0]?.value || "combat";
+      const targetLabel = getCategoryLabel(normalizedCategories, targetValue);
+
+      function updateTrack(track) {
+        if (!change || normalizeCategoryValue(track.category) !== change.from) return track;
+
+        return {
+          ...track,
+          category: targetValue,
+          tags: [targetLabel],
+        };
+      }
+
+      return {
+        ...current,
+        categories: normalizedCategories,
+        featuredTrack: updateTrack(current.featuredTrack),
+        gameTracks: current.gameTracks.map(updateTrack),
+        personalTracks: current.personalTracks.map(updateTrack),
+      };
+    });
   }
 
   if (!loggedIn) {
@@ -462,6 +706,7 @@ export function AdminPanel() {
           <TrackEditor
             title="Game Tracks"
             tracks={content.gameTracks}
+            categories={categories}
             onChange={(gameTracks) => setContent({ ...content, gameTracks })}
           />
         ) : null}
@@ -469,6 +714,7 @@ export function AdminPanel() {
           <TrackEditor
             title="Personal Tracks"
             tracks={content.personalTracks}
+            categories={categories}
             personal
             onChange={(personalTracks) => setContent({ ...content, personalTracks })}
           />
@@ -476,8 +722,12 @@ export function AdminPanel() {
         {tab === "featured" ? (
           <FeaturedEditor
             track={content.featuredTrack}
+            categories={categories}
             onChange={(featuredTrack) => setContent({ ...content, featuredTrack })}
           />
+        ) : null}
+        {tab === "categories" ? (
+          <CategoryEditor categories={categories} onChange={applyCategoryChange} />
         ) : null}
         {tab === "projects" ? (
           <ProjectEditor projects={content.projects} onChange={(projects) => setContent({ ...content, projects })} />

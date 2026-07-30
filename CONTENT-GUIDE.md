@@ -44,6 +44,16 @@ Falls dein Blob Store noch den alten Read-Write-Token nutzt, funktioniert `BLOB_
 
 Die oeffentliche Seite aktualisiert sich danach innerhalb von etwa einer Minute.
 
+## Kategorien bearbeiten
+
+Im Admin gibt es den Tab `Categories`.
+
+- `Name` ist der sichtbare Name auf der Website.
+- `Slug` ist der interne Wert fuer Filter und Zuordnung.
+- `Farbe` steuert den Track-Akzent, den Filter-Button und das kleine Track-Badge.
+
+Neue Songs bekommen ihre Kategorie danach ueber ein Auswahlfeld. Dadurch entstehen keine leeren Kategorie-Badges mehr durch Tippfehler.
+
 ## Fanart oder Bilder hochladen
 
 1. Gehe auf `/admin`.
