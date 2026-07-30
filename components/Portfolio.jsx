@@ -571,19 +571,6 @@ export function Portfolio({ content }) {
           <p style={{ opacity: 0.7, marginBottom: 20 }}>
             All game tracks are loop-ready and designed for seamless in-game use.
           </p>
-          <div className={`panel featured-track ${currentSrc === content.featuredTrack.file ? "playing" : ""}`}>
-            <div className="section-kicker">{content.featuredTrack.kicker || "Featured Track"}</div>
-            <h3>
-              <TrackTitle track={content.featuredTrack} />
-            </h3>
-            <p>{content.featuredTrack.description}</p>
-            <Player
-              track={content.featuredTrack}
-              playerId="featured-track"
-              activePlayback={activePlayback}
-              setActivePlayback={setActivePlayback}
-            />
-          </div>
           <div className="filters">
             {[{ value: "all", label: "All", color: "#00e5ff" }, ...gameCategories].map((category) => (
               <button

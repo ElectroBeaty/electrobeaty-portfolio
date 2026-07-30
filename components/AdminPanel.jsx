@@ -60,6 +60,16 @@ function joinList(value) {
   return Array.isArray(value) ? value.join(", ") : "";
 }
 
+function moveItem(items, index, direction) {
+  const targetIndex = index + direction;
+  if (targetIndex < 0 || targetIndex >= items.length) return items;
+
+  const nextItems = [...items];
+  [nextItems[index], nextItems[targetIndex]] = [nextItems[targetIndex], nextItems[index]];
+
+  return nextItems;
+}
+
 function hasOwnKey(source, key) {
   return Object.prototype.hasOwnProperty.call(source, key);
 }
@@ -143,6 +153,29 @@ function SelectField({ label, value, options, onChange }) {
           </option>
         ))}
       </select>
+    </div>
+  );
+}
+
+function OrderControls({ index, length, onMove }) {
+  return (
+    <div className="admin-order-controls" aria-label="Sort order">
+      <button
+        className="admin-order-btn"
+        type="button"
+        onClick={() => onMove(-1)}
+        disabled={index === 0}
+      >
+        Up
+      </button>
+      <button
+        className="admin-order-btn"
+        type="button"
+        onClick={() => onMove(1)}
+        disabled={index === length - 1}
+      >
+        Down
+      </button>
     </div>
   );
 }
@@ -245,10 +278,16 @@ function TrackEditor({ title, tracks, categories, onChange, personal = false }) 
     onChange(tracks.filter((_, itemIndex) => itemIndex !== index));
   }
 
+  function move(index, direction) {
+    onChange(moveItem(tracks, index, direction));
+  }
+
   return (
     <section className="admin-editor">
       <h2>{title}</h2>
-      <p className="admin-muted">Neue Songs erscheinen nach dem Speichern automatisch auf der Website.</p>
+      <p className="admin-muted">
+        Neue Songs werden oben eingefuegt. Mit Up und Down stellst du die Reihenfolge auf der Website ein.
+      </p>
       <div className="admin-list">
         {tracks.map((track, index) => (
           <div className="admin-item" key={`track-${index}`}>
@@ -278,9 +317,12 @@ function TrackEditor({ title, tracks, categories, onChange, personal = false }) 
             />
             <div className="admin-actions">
               <UploadButton type="audio" onUploaded={(url) => update(index, { file: url })} />
-              <button className="admin-danger" type="button" onClick={() => remove(index)}>
-                Delete
-              </button>
+              <div className="admin-item-tools">
+                <OrderControls index={index} length={tracks.length} onMove={(direction) => move(index, direction)} />
+                <button className="admin-danger" type="button" onClick={() => remove(index)}>
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -292,12 +334,12 @@ function TrackEditor({ title, tracks, categories, onChange, personal = false }) 
           onClick={() => {
             const category = personal ? "personal" : categories[0]?.value || "combat";
             onChange([
-              ...tracks,
               {
                 ...emptyTrack,
                 category,
                 tags: [getCategoryLabel(categories, category)],
               },
+              ...tracks,
             ]);
           }}
         >
@@ -424,9 +466,14 @@ function ProjectEditor({ projects, onChange }) {
     onChange(projects.map((project, itemIndex) => (itemIndex === index ? { ...project, ...patch } : project)));
   }
 
+  function move(index, direction) {
+    onChange(moveItem(projects, index, direction));
+  }
+
   return (
     <section className="admin-editor">
       <h2>Projects</h2>
+      <p className="admin-muted">Neue News-Eintraege werden oben eingefuegt. Mit Up und Down sortierst du sie.</p>
       <div className="admin-list">
         {projects.map((project, index) => (
           <div className="admin-item" key={`project-${index}`}>
@@ -454,19 +501,22 @@ function ProjectEditor({ projects, onChange }) {
               }
             />
             <div className="admin-actions">
-              <button
-                className="admin-danger"
-                type="button"
-                onClick={() => onChange(projects.filter((_, itemIndex) => itemIndex !== index))}
-              >
-                Delete
-              </button>
+              <div className="admin-item-tools">
+                <OrderControls index={index} length={projects.length} onMove={(direction) => move(index, direction)} />
+                <button
+                  className="admin-danger"
+                  type="button"
+                  onClick={() => onChange(projects.filter((_, itemIndex) => itemIndex !== index))}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
       <div className="admin-actions">
-        <button className="admin-small-btn" type="button" onClick={() => onChange([...projects, clone(emptyProject)])}>
+        <button className="admin-small-btn" type="button" onClick={() => onChange([clone(emptyProject), ...projects])}>
           Add project
         </button>
       </div>
@@ -479,9 +529,14 @@ function FanartEditor({ fanart, onChange }) {
     onChange(fanart.map((item, itemIndex) => (itemIndex === index ? { ...item, ...patch } : item)));
   }
 
+  function move(index, direction) {
+    onChange(moveItem(fanart, index, direction));
+  }
+
   return (
     <section className="admin-editor">
       <h2>Fanart</h2>
+      <p className="admin-muted">Neue Fanarts werden oben eingefuegt. Mit Up und Down sortierst du die Galerie.</p>
       <div className="admin-list">
         {fanart.map((item, index) => (
           <div className="admin-item" key={`fanart-${index}`}>
@@ -516,19 +571,22 @@ function FanartEditor({ fanart, onChange }) {
             />
             <div className="admin-actions">
               <UploadButton type="image" onUploaded={(url) => update(index, { image: url })} />
-              <button
-                className="admin-danger"
-                type="button"
-                onClick={() => onChange(fanart.filter((_, itemIndex) => itemIndex !== index))}
-              >
-                Delete
-              </button>
+              <div className="admin-item-tools">
+                <OrderControls index={index} length={fanart.length} onMove={(direction) => move(index, direction)} />
+                <button
+                  className="admin-danger"
+                  type="button"
+                  onClick={() => onChange(fanart.filter((_, itemIndex) => itemIndex !== index))}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
       <div className="admin-actions">
-        <button className="admin-small-btn" type="button" onClick={() => onChange([...fanart, clone(emptyFanart)])}>
+        <button className="admin-small-btn" type="button" onClick={() => onChange([clone(emptyFanart), ...fanart])}>
           Add fanart
         </button>
       </div>
