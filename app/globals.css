@@ -44,7 +44,7 @@
     }
 
     .sky {
-      z-index: -10;
+      z-index: 0;
       overflow: hidden;
     }
 
@@ -108,7 +108,7 @@
     }
 
     .scanlines {
-      z-index: -6;
+      z-index: 1;
       opacity: 0.12;
       background: repeating-linear-gradient(
         to bottom,
@@ -118,6 +118,12 @@
         transparent 9px
       );
       mix-blend-mode: screen;
+    }
+
+    main,
+    footer {
+      position: relative;
+      z-index: 2;
     }
 
     @keyframes twinkle {
@@ -3364,8 +3370,8 @@ select {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--cyan), var(--pink));
-  box-shadow: 0 0 10px rgba(0,229,255,0.55);
+  background: linear-gradient(90deg, var(--cyan) 0%, #72f6ff 72%, #b9a7ff 100%);
+  box-shadow: 0 0 10px rgba(0,229,255,0.45);
 }
 
 .mini-player-time {
@@ -3878,5 +3884,187 @@ select {
 
   .sky::after {
     opacity: 0.12;
+  }
+}
+
+/* Final section rail: dots plus hover labels only */
+.section-orbit {
+  display: flex !important;
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  width: 66px;
+  padding: 20px 12px;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  overflow: visible;
+  border: 1px solid rgba(0,229,255,0.26);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(0,229,255,0.18), transparent 34%),
+    linear-gradient(180deg, rgba(5,7,34,0.68), rgba(6,5,31,0.48));
+  box-shadow:
+    0 0 28px rgba(0,229,255,0.15),
+    0 0 42px rgba(139,92,246,0.12),
+    inset 0 0 22px rgba(255,255,255,0.035);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+  transform: translateY(-50%);
+}
+
+.section-readout,
+.section-progress {
+  display: none !important;
+}
+
+.section-orbit::before {
+  inset: 6px;
+  border-radius: 999px;
+  border-color: rgba(0,229,255,0.12);
+}
+
+.section-orbit::after {
+  left: 50%;
+  right: auto;
+  top: -15px;
+  width: 1px;
+  height: 13px;
+  background: linear-gradient(180deg, transparent, rgba(0,229,255,0.76));
+  transform: translateX(-50%);
+}
+
+.section-links {
+  align-items: center;
+  gap: 13px;
+  padding: 3px 0;
+}
+
+.section-links::before {
+  right: 50%;
+  top: 20px;
+  bottom: 20px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(0,229,255,0.32) 18%,
+    rgba(255,255,255,0.12) 50%,
+    rgba(0,229,255,0.32) 82%,
+    transparent
+  );
+  box-shadow: 0 0 14px rgba(0,229,255,0.26);
+  transform: translateX(50%);
+}
+
+.section-orbit a {
+  display: block;
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.section-orbit a::before {
+  display: none !important;
+}
+
+.section-orbit a::after {
+  right: 50%;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgba(0,229,255,0.48);
+  background: rgba(134,191,214,0.55);
+  box-shadow:
+    0 0 10px rgba(0,229,255,0.22),
+    inset 0 0 8px rgba(255,255,255,0.16);
+  transform: translate(50%, -50%);
+}
+
+.section-orbit a:hover,
+.section-orbit a.active {
+  background: rgba(0,229,255,0.08);
+}
+
+.section-orbit a:hover::after,
+.section-orbit a.active::after {
+  background: var(--cyan);
+  border-color: rgba(255,255,255,0.82);
+  box-shadow:
+    0 0 14px rgba(0,229,255,0.86),
+    0 0 26px rgba(255,79,216,0.34);
+  transform: translate(50%, -50%) scale(1.22);
+}
+
+.section-orbit a span {
+  position: absolute;
+  right: 46px;
+  top: 50%;
+  width: max-content;
+  max-width: 170px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  color: rgba(234,248,255,0.92);
+  background: transparent;
+  box-shadow: none;
+  opacity: 0;
+  pointer-events: none;
+  text-align: right;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 12px rgba(0,229,255,0.55),
+    0 1px 10px rgba(2,4,19,0.86);
+  transform: translate(8px, -50%);
+  transition: opacity 0.18s ease, transform 0.18s ease, color 0.18s ease;
+  white-space: nowrap;
+}
+
+.section-orbit a span::after {
+  display: none;
+}
+
+.section-orbit a:hover span,
+.section-orbit a:focus-visible span {
+  opacity: 1;
+  color: #f8fbff;
+  transform: translate(0, -50%);
+}
+
+@media (max-width: 1580px) {
+  .section-orbit {
+    right: 10px;
+    width: 58px;
+    padding: 17px 9px;
+  }
+
+  .section-orbit a {
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+  }
+
+  .section-orbit a::after {
+    width: 14px;
+    height: 14px;
+  }
+
+  .section-orbit a span {
+    right: 48px;
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 760px) {
+  .section-orbit {
+    display: none !important;
   }
 }

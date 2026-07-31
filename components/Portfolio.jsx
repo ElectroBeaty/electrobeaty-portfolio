@@ -426,7 +426,6 @@ export function Portfolio({ content }) {
   const [lightbox, setLightbox] = useState(null);
   const [activeSection, setActiveSection] = useState("home");
   const [headerDocked, setHeaderDocked] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [showAllGameTracks, setShowAllGameTracks] = useState(false);
   const [showAllPersonalTracks, setShowAllPersonalTracks] = useState(false);
   const [trackPreviewLimit, setTrackPreviewLimit] = useState(DESKTOP_TRACK_PREVIEW_COUNT);
@@ -521,8 +520,6 @@ export function Portfolio({ content }) {
     function updateHeaderDock() {
       animationFrame = null;
       setHeaderDocked(window.scrollY > 90);
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(maxScroll > 0 ? Math.min(Math.round((window.scrollY / maxScroll) * 100), 100) : 0);
     }
 
     function handleScroll() {
@@ -559,12 +556,6 @@ export function Portfolio({ content }) {
     if (filter === "all") return true;
     return normalizeCategoryValue(track.category) === filter;
   });
-  const activeSectionIndex = Math.max(
-    0,
-    SECTION_MARKERS.findIndex((section) => section.id === activeSection),
-  );
-  const activeSectionData = SECTION_MARKERS[activeSectionIndex] || SECTION_MARKERS[0];
-
   function issuePlayerCommand(playerId, type, payload = {}) {
     setPlayerCommand({
       id: Date.now(),
@@ -647,14 +638,6 @@ export function Portfolio({ content }) {
       </header>
 
       <nav className="section-orbit" aria-label="Sections">
-        <div className="section-readout" aria-hidden="true">
-          <span>Area</span>
-          <strong>{activeSectionData.label}</strong>
-          <small>{activeSectionData.description}</small>
-          <div className="section-progress">
-            <i style={{ height: `${scrollProgress}%` }} />
-          </div>
-        </div>
         <div className="section-links">
           {SECTION_MARKERS.map((section, index) => (
             <a
