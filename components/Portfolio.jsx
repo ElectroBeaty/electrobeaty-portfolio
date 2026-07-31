@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CyberProfileRing } from "@/components/CyberProfileRing";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import {
@@ -13,13 +13,13 @@ import {
 } from "@/lib/categories";
 
 const SECTION_MARKERS = [
-  { id: "home", label: "Home" },
-  { id: "label", label: "Label Feature", navLabel: "Label" },
-  { id: "news", label: "News" },
-  { id: "music", label: "Game Audio", navLabel: "Tracks" },
-  { id: "personal", label: "Personal" },
-  { id: "fanart", label: "Fanart" },
-  { id: "about", label: "Contact" },
+  { id: "home", label: "Home", description: "Intro signal" },
+  { id: "label", label: "Label Feature", navLabel: "Label", description: "Pinned release" },
+  { id: "news", label: "News", description: "Work log" },
+  { id: "music", label: "Game Audio", navLabel: "Tracks", description: "Game-ready demos" },
+  { id: "personal", label: "Personal", description: "Platform releases" },
+  { id: "fanart", label: "Fanart", description: "Gallery archive" },
+  { id: "about", label: "Contact", description: "Links and info" },
 ];
 const DESKTOP_TRACK_PREVIEW_COUNT = 6;
 const MOBILE_TRACK_PREVIEW_COUNT = 3;
@@ -33,20 +33,37 @@ function TrackTitle({ track }) {
   );
 }
 
-function Player({ track, playerId, activePlayback, setActivePlayback }) {
+function Player({ track, playerId, activePlayback, setActivePlayback, playerCommand }) {
   const audioRef = useRef(null);
   const [time, setTime] = useState("0:00");
   const [progress, setProgress] = useState(0);
-  const isPlaying = activePlayback?.playerId === playerId;
+  const [durationLabel, setDurationLabel] = useState("0:00");
+  const isCurrent = activePlayback?.playerId === playerId;
+  const isPlaying = isCurrent && activePlayback?.isPlaying;
   const playLabel = `${isPlaying ? "Pause" : "Play"} ${track.title}`;
 
   useEffect(() => {
-    if (!isPlaying) {
+    if (!isCurrent) {
       audioRef.current?.pause();
       setProgress(0);
       setTime("0:00");
     }
-  }, [isPlaying]);
+  }, [isCurrent]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !playerCommand || playerCommand.playerId !== playerId) return;
+
+    if (playerCommand.type === "toggle") {
+      toggle();
+      return;
+    }
+
+    if (playerCommand.type === "seek" && audio.duration) {
+      audio.currentTime = audio.duration * playerCommand.ratio;
+      updateProgress(audio);
+    }
+  }, [playerCommand]);
 
   function formatTime(seconds) {
     if (!seconds || Number.isNaN(seconds)) return "0:00";
@@ -55,22 +72,61 @@ function Player({ track, playerId, activePlayback, setActivePlayback }) {
     return `${min}:${sec}`;
   }
 
-  async function toggle() {
+  function updateProgress(audio) {
+    const nextProgress = (audio.currentTime / audio.duration) * 100 || 0;
+    const nextTime = formatTime(audio.currentTime);
+    const nextDurationLabel = formatTime(audio.duration);
+
+    setProgress(nextProgress);
+    setTime(nextTime);
+    setDurationLabel(nextDurationLabel);
+
+    setActivePlayback((current) =>
+      current?.playerId === playerId
+        ? {
+            ...current,
+            progress: nextProgress,
+            time: nextTime,
+            duration: nextDurationLabel,
+          }
+        : current,
+    );
+  }
+
+  async function play() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (isPlaying) {
-      audio.pause();
-      setActivePlayback(null);
-      return;
-    }
-
     try {
-      setActivePlayback({ src: track.file, playerId });
+      setActivePlayback({
+        src: track.file,
+        playerId,
+        title: track.title,
+        progress,
+        time,
+        duration: durationLabel,
+        isPlaying: true,
+      });
       await audio.play();
     } catch {
       setActivePlayback(null);
     }
+  }
+
+  function pause() {
+    audioRef.current?.pause();
+    setActivePlayback((current) =>
+      current?.playerId === playerId ? { ...current, isPlaying: false } : current,
+    );
+  }
+
+  function toggle() {
+    if (isPlaying) {
+      pause();
+      return;
+    }
+
+    play();
   }
 
   function seek(event) {
@@ -89,10 +145,9 @@ function Player({ track, playerId, activePlayback, setActivePlayback }) {
         className="track-audio"
         src={track.file}
         preload="none"
+        onLoadedMetadata={(event) => setDurationLabel(formatTime(event.currentTarget.duration))}
         onTimeUpdate={(event) => {
-          const audio = event.currentTarget;
-          setProgress((audio.currentTime / audio.duration) * 100 || 0);
-          setTime(formatTime(audio.currentTime));
+          updateProgress(event.currentTarget);
         }}
         onEnded={() => {
           setProgress(0);
@@ -138,37 +193,45 @@ function Player({ track, playerId, activePlayback, setActivePlayback }) {
   );
 }
 
-function TrackCard({ track, category, playerId, currentSrc, activePlayback, setActivePlayback }) {
+function TrackCard({ track, category, playerId, currentSrc, activePlayback, setActivePlayback, playerCommand }) {
   const categoryLabel = category?.label || labelFromCategoryValue(track.category);
   const categoryColor = normalizeCategoryColor(category?.color);
   const tags = track.tags?.length ? track.tags : [categoryLabel];
+  const secondaryTags = tags.filter((tag) => tag.toLowerCase() !== categoryLabel.toLowerCase());
 
   return (
     <div
-      className={`card ${currentSrc === track.file ? "playing" : ""}`}
+      className={`card track-card ${currentSrc === track.file ? "playing" : ""}`}
       data-category={track.category || ""}
+      data-player-id={playerId}
       style={{ "--track-color": categoryColor }}
     >
-      <div
-        className="track-icon"
-        style={{ "--track-color": categoryColor }}
-        aria-label={categoryLabel}
-      >
-        <CategoryIcon icon={category?.icon} />
+      <div className="track-card-head">
+        <div
+          className="track-icon"
+          style={{ "--track-color": categoryColor }}
+          aria-label={categoryLabel}
+        >
+          <CategoryIcon icon={category?.icon} />
+        </div>
+        <div className="track-card-title">
+          <h3>
+            <TrackTitle track={track} />
+          </h3>
+          <span className="track-meta">{categoryLabel}</span>
+        </div>
       </div>
-      <h3>
-        <TrackTitle track={track} />
-      </h3>
       <p>{track.description}</p>
       <Player
         track={track}
         playerId={playerId}
         activePlayback={activePlayback}
         setActivePlayback={setActivePlayback}
+        playerCommand={playerCommand}
       />
-      {tags.length ? (
+      {secondaryTags.length ? (
         <div className="chips">
-          {tags.map((tag) => (
+          {secondaryTags.map((tag) => (
             <span className="chip" key={tag}>
               {tag}
             </span>
@@ -210,6 +273,7 @@ function TrackGrid({
   currentSrc,
   activePlayback,
   setActivePlayback,
+  playerCommand,
 }) {
   const visibleTracks = showAll ? tracks : tracks.slice(0, previewLimit);
   const hasMore = tracks.length > previewLimit;
@@ -226,6 +290,7 @@ function TrackGrid({
             currentSrc={currentSrc}
             activePlayback={activePlayback}
             setActivePlayback={setActivePlayback}
+            playerCommand={playerCommand}
           />
         ))}
       </div>
@@ -237,6 +302,63 @@ function TrackGrid({
         </div>
       ) : null}
     </>
+  );
+}
+
+function MiniPlayer({ activePlayback, issuePlayerCommand }) {
+  if (!activePlayback?.src) return null;
+
+  function seek(event) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const ratio = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+    issuePlayerCommand(activePlayback.playerId, "seek", { ratio });
+  }
+
+  function scrollToTrack() {
+    const escapedPlayerId =
+      typeof CSS !== "undefined" && CSS.escape
+        ? CSS.escape(activePlayback.playerId)
+        : activePlayback.playerId.replaceAll('"', '\\"');
+    const card = document.querySelector(`[data-player-id="${escapedPlayerId}"]`);
+    card?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  return (
+    <div id="nowPlayingBar" className="show mini-player" aria-label="Current audio player">
+      <div className="np-visualizer" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+      <button
+        className="mini-player-toggle"
+        type="button"
+        onClick={() => issuePlayerCommand(activePlayback.playerId, "toggle")}
+        aria-label={`${activePlayback.isPlaying ? "Pause" : "Play"} ${activePlayback.title}`}
+        aria-pressed={activePlayback.isPlaying}
+      />
+      <div className="mini-player-main">
+        <button className="mini-player-title" type="button" onClick={scrollToTrack}>
+          <span>Now Playing</span>
+          <strong>{activePlayback.title}</strong>
+        </button>
+        <button
+          className="mini-player-bar"
+          type="button"
+          onClick={seek}
+          aria-label={`Seek ${activePlayback.title}`}
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow={Math.round(activePlayback.progress || 0)}
+        >
+          <span style={{ width: `${activePlayback.progress || 0}%` }} />
+        </button>
+      </div>
+      <span className="mini-player-time">
+        {activePlayback.time || "0:00"} / {activePlayback.duration || "0:00"}
+      </span>
+    </div>
   );
 }
 
@@ -286,9 +408,11 @@ export function Portfolio({ content }) {
   const [lightbox, setLightbox] = useState(null);
   const [activeSection, setActiveSection] = useState("home");
   const [headerDocked, setHeaderDocked] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [showAllGameTracks, setShowAllGameTracks] = useState(false);
   const [showAllPersonalTracks, setShowAllPersonalTracks] = useState(false);
   const [trackPreviewLimit, setTrackPreviewLimit] = useState(DESKTOP_TRACK_PREVIEW_COUNT);
+  const [playerCommand, setPlayerCommand] = useState(null);
   const adminClickCountRef = useRef(0);
   const adminClickTimerRef = useRef(null);
   const currentSrc = activePlayback?.src || "";
@@ -297,6 +421,23 @@ export function Portfolio({ content }) {
   );
   const gameCategoryValues = new Set(content.gameTracks.map((track) => normalizeCategoryValue(track.category)));
   const gameCategories = categories.filter((category) => gameCategoryValues.has(category.value));
+  const fanartLightboxItems = useMemo(
+    () =>
+      content.fanart.flatMap((item) => [
+        {
+          src: item.image,
+          title: item.title,
+          detail: item.artist ? `Art by ${item.artist}` : "Artwork",
+        },
+        ...(item.versions || []).map((src, index) => ({
+          src,
+          title: `${item.title} - Version ${index + 1}`,
+          detail: item.artist ? `Art by ${item.artist}` : "Artwork version",
+        })),
+      ]),
+    [content.fanart],
+  );
+  const lightboxItem = lightbox !== null ? fanartLightboxItems[lightbox] : null;
 
   useEffect(() => {
     return () => {
@@ -360,6 +501,8 @@ export function Portfolio({ content }) {
     function updateHeaderDock() {
       animationFrame = null;
       setHeaderDocked(window.scrollY > 90);
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(maxScroll > 0 ? Math.min(Math.round((window.scrollY / maxScroll) * 100), 100) : 0);
     }
 
     function handleScroll() {
@@ -379,19 +522,49 @@ export function Portfolio({ content }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (lightbox === null) return undefined;
+
+    function handleKey(event) {
+      if (event.key === "Escape") setLightbox(null);
+      if (event.key === "ArrowLeft") moveLightbox(-1);
+      if (event.key === "ArrowRight") moveLightbox(1);
+    }
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightbox, fanartLightboxItems.length]);
+
   const filteredTracks = content.gameTracks.filter((track) => {
     if (filter === "all") return true;
     return normalizeCategoryValue(track.category) === filter;
   });
-  const currentTrackTitle =
-    [...content.gameTracks, ...content.personalTracks, content.featuredTrack].find(
-      (track) => track.file === currentSrc,
-    )?.title || "Track";
   const activeSectionIndex = Math.max(
     0,
     SECTION_MARKERS.findIndex((section) => section.id === activeSection),
   );
   const activeSectionData = SECTION_MARKERS[activeSectionIndex] || SECTION_MARKERS[0];
+
+  function issuePlayerCommand(playerId, type, payload = {}) {
+    setPlayerCommand({
+      id: Date.now(),
+      playerId,
+      type,
+      ...payload,
+    });
+  }
+
+  function openLightbox(src) {
+    const index = fanartLightboxItems.findIndex((item) => item.src === src);
+    setLightbox(index >= 0 ? index : null);
+  }
+
+  function moveLightbox(direction) {
+    setLightbox((current) => {
+      if (current === null || !fanartLightboxItems.length) return current;
+      return (current + direction + fanartLightboxItems.length) % fanartLightboxItems.length;
+    });
+  }
 
   function handleLogoClick(event) {
     if (adminClickTimerRef.current) {
@@ -434,6 +607,10 @@ export function Portfolio({ content }) {
         <div className="section-readout" aria-hidden="true">
           <span>Area</span>
           <strong>{activeSectionData.label}</strong>
+          <small>{activeSectionData.description}</small>
+          <div className="section-progress">
+            <i style={{ height: `${scrollProgress}%` }} />
+          </div>
         </div>
         <div className="section-links">
           {SECTION_MARKERS.map((section, index) => (
@@ -596,6 +773,7 @@ export function Portfolio({ content }) {
             currentSrc={currentSrc}
             activePlayback={activePlayback}
             setActivePlayback={setActivePlayback}
+            playerCommand={playerCommand}
           />
         </section>
 
@@ -616,6 +794,7 @@ export function Portfolio({ content }) {
               currentSrc={currentSrc}
               activePlayback={activePlayback}
               setActivePlayback={setActivePlayback}
+              playerCommand={playerCommand}
             />
           </div>
         </section>
@@ -634,7 +813,7 @@ export function Portfolio({ content }) {
                   <button
                     className="thumb large"
                     type="button"
-                    onClick={() => setLightbox({ src: item.image, alt: item.title })}
+                    onClick={() => openLightbox(item.image)}
                     aria-label={`Open ${item.title}`}
                   >
                     <img src={item.image} alt={item.title} />
@@ -658,12 +837,7 @@ export function Portfolio({ content }) {
                           <button
                             type="button"
                             key={src}
-                            onClick={() =>
-                              setLightbox({
-                                src,
-                                alt: `${item.title} version ${index + 1}`,
-                              })
-                            }
+                            onClick={() => openLightbox(src)}
                             aria-label={`Open ${item.title} version ${index + 1}`}
                           >
                             <img src={src} alt={`More artwork for ${item.title}`} />
@@ -740,29 +914,42 @@ export function Portfolio({ content }) {
         </p>
       </footer>
 
-      {lightbox ? (
-        <button
+      {lightboxItem ? (
+        <div
           id="lightbox"
           className="show"
-          type="button"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Artwork preview"
           onClick={() => setLightbox(null)}
-          aria-label="Close artwork preview"
         >
-          <img id="lightbox-img" src={lightbox.src} alt={lightbox.alt} />
-        </button>
+          <div className="lightbox-panel" onClick={(event) => event.stopPropagation()}>
+            <button className="lightbox-close" type="button" onClick={() => setLightbox(null)}>
+              Close
+            </button>
+            {fanartLightboxItems.length > 1 ? (
+              <button className="lightbox-nav prev" type="button" onClick={() => moveLightbox(-1)}>
+                Prev
+              </button>
+            ) : null}
+            <img id="lightbox-img" src={lightboxItem.src} alt={lightboxItem.title} />
+            {fanartLightboxItems.length > 1 ? (
+              <button className="lightbox-nav next" type="button" onClick={() => moveLightbox(1)}>
+                Next
+              </button>
+            ) : null}
+            <div className="lightbox-caption">
+              <strong>{lightboxItem.title}</strong>
+              <span>{lightboxItem.detail}</span>
+              <em>
+                {lightbox + 1} / {fanartLightboxItems.length}
+              </em>
+            </div>
+          </div>
+        </div>
       ) : null}
 
-      <div id="nowPlayingBar" className={currentSrc ? "show" : ""}>
-        <div className="np-visualizer">
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
-        <span id="nowPlayingText">
-          {currentSrc ? `NOW PLAYING - ${currentTrackTitle}` : "Nothing playing"}
-        </span>
-      </div>
+      <MiniPlayer activePlayback={activePlayback} issuePlayerCommand={issuePlayerCommand} />
     </>
   );
 }

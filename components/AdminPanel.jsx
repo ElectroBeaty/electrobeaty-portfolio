@@ -262,6 +262,67 @@ function UploadButton({ type, onUploaded }) {
   );
 }
 
+function getAdminCategory(categories, value) {
+  const normalizedValue = normalizeCategoryValue(value);
+  return (
+    categories.find((category) => category.value === normalizedValue) || {
+      value: normalizedValue,
+      label: labelFromCategoryValue(normalizedValue),
+      color: "#00e5ff",
+      icon: "sparkle",
+    }
+  );
+}
+
+function AdminTrackPreview({ track, categories }) {
+  const category = getAdminCategory(categories, track.category);
+  const hasAudio = Boolean(track.file);
+
+  return (
+    <div className="admin-preview" style={{ "--track-color": category.color }}>
+      <span className="admin-preview-icon" aria-hidden="true">
+        <CategoryIcon icon={category.icon} />
+      </span>
+      <div>
+        <strong>{track.title || "Untitled track"}</strong>
+        <span>
+          {category.label} / {hasAudio ? "Audio linked" : "Missing audio"}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function AdminProjectPreview({ project }) {
+  return (
+    <div className="admin-preview admin-preview-news">
+      <span className="admin-preview-status">{project.status || "NEWS"}</span>
+      <div>
+        <strong>{project.title || "Untitled update"}</strong>
+        <span>{project.description || "No description yet"}</span>
+      </div>
+    </div>
+  );
+}
+
+function AdminFanartPreview({ item }) {
+  const hasImage = Boolean(item.image);
+
+  return (
+    <div className="admin-preview admin-preview-art">
+      <span className="admin-preview-thumb" aria-hidden="true">
+        {hasImage ? <img src={item.image} alt="" /> : <CategoryIcon icon="sparkle" />}
+      </span>
+      <div>
+        <strong>{item.title || "Untitled artwork"}</strong>
+        <span>
+          {item.artist || "Unknown artist"} / {hasImage ? "Image linked" : "Missing image"}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function TrackEditor({ title, tracks, categories, onChange, personal = false }) {
   function update(index, patch) {
     onChange(tracks.map((track, itemIndex) => (itemIndex === index ? { ...track, ...patch } : track)));
@@ -291,6 +352,7 @@ function TrackEditor({ title, tracks, categories, onChange, personal = false }) 
       <div className="admin-list">
         {tracks.map((track, index) => (
           <div className="admin-item" key={`track-${index}`}>
+            <AdminTrackPreview track={track} categories={categories} />
             <div className="admin-row">
               <Field label="Titel" value={track.title} onChange={(value) => update(index, { title: value })} />
               <SelectField
@@ -477,6 +539,7 @@ function ProjectEditor({ projects, onChange }) {
       <div className="admin-list">
         {projects.map((project, index) => (
           <div className="admin-item" key={`project-${index}`}>
+            <AdminProjectPreview project={project} />
             <div className="admin-row">
               <Field label="Status" value={project.status} onChange={(value) => update(index, { status: value })} />
               <Field label="Titel" value={project.title} onChange={(value) => update(index, { title: value })} />
@@ -540,6 +603,7 @@ function FanartEditor({ fanart, onChange }) {
       <div className="admin-list">
         {fanart.map((item, index) => (
           <div className="admin-item" key={`fanart-${index}`}>
+            <AdminFanartPreview item={item} />
             <div className="admin-row">
               <Field label="Titel" value={item.title} onChange={(value) => update(index, { title: value })} />
               <Field label="Artist" value={item.artist} onChange={(value) => update(index, { artist: value })} />
@@ -606,6 +670,7 @@ function FeaturedEditor({ track, categories, onChange }) {
   return (
     <section className="admin-editor">
       <h2>Featured Track</h2>
+      <AdminTrackPreview track={track} categories={categories} />
       <div className="admin-row">
         <Field label="Kicker" value={track.kicker} onChange={(value) => onChange({ ...track, kicker: value })} />
         <Field label="Titel" value={track.title} onChange={(value) => onChange({ ...track, title: value })} />
@@ -667,9 +732,14 @@ export function AdminPanel() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [password, setPassword] = useState("");
   const [content, setContent] = useState(clone(seedPortfolioContent));
+  const [savedSnapshot, setSavedSnapshot] = useState(JSON.stringify(seedPortfolioContent));
   const [tab, setTab] = useState("tracks");
   const [status, setStatus] = useState("");
   const categories = normalizeAdminCategories(content.categories);
+  const hasUnsavedChanges = useMemo(
+    () => JSON.stringify(content) !== savedSnapshot,
+    [content, savedSnapshot],
+  );
 
   const tabs = useMemo(
     () => [
@@ -689,6 +759,7 @@ export function AdminPanel() {
     const result = await response.json();
     if (response.ok) {
       setContent(result.content);
+      setSavedSnapshot(JSON.stringify(result.content));
       setLoggedIn(true);
     }
   }
@@ -696,6 +767,18 @@ export function AdminPanel() {
   useEffect(() => {
     loadContent();
   }, []);
+
+  useEffect(() => {
+    function warnBeforeUnload(event) {
+      if (!hasUnsavedChanges) return;
+
+      event.preventDefault();
+      event.returnValue = "";
+    }
+
+    window.addEventListener("beforeunload", warnBeforeUnload);
+    return () => window.removeEventListener("beforeunload", warnBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   async function login(event) {
     event.preventDefault();
@@ -728,6 +811,7 @@ export function AdminPanel() {
       return;
     }
     setContent(result.content);
+    setSavedSnapshot(JSON.stringify(result.content));
     setStatus("Saved. Public page updates within about a minute.");
   }
 
@@ -789,11 +873,14 @@ export function AdminPanel() {
           <p className="admin-muted">Upload songs, update descriptions, and keep your public portfolio fresh.</p>
         </div>
         <div className="admin-actions">
+          <div className={`admin-save-state ${hasUnsavedChanges ? "dirty" : ""}`}>
+            {hasUnsavedChanges ? "Unsaved changes" : "All changes saved"}
+          </div>
           <a className="fanart-btn" href="/">
             View site
           </a>
           <button className="main-btn" type="button" onClick={save}>
-            Save changes
+            {hasUnsavedChanges ? "Save changes" : "Saved"}
           </button>
         </div>
       </div>
