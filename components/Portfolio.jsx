@@ -33,7 +33,7 @@ function TrackTitle({ track }) {
   );
 }
 
-function Player({ track, playerId, activePlayback, setActivePlayback, playerCommand }) {
+function Player({ track, playerId, activePlayback, setActivePlayback, playerCommand, volume }) {
   const audioRef = useRef(null);
   const [time, setTime] = useState("0:00");
   const [progress, setProgress] = useState(0);
@@ -64,6 +64,12 @@ function Player({ track, playerId, activePlayback, setActivePlayback, playerComm
       updateProgress(audio);
     }
   }, [playerCommand]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
 
   function formatTime(seconds) {
     if (!seconds || Number.isNaN(seconds)) return "0:00";
@@ -98,6 +104,7 @@ function Player({ track, playerId, activePlayback, setActivePlayback, playerComm
     if (!audio) return;
 
     try {
+      audio.volume = volume;
       setActivePlayback({
         src: track.file,
         playerId,
@@ -175,25 +182,21 @@ function Player({ track, playerId, activePlayback, setActivePlayback, playerComm
           <span className="cyber-fill" style={{ width: `${progress}%` }} />
         </button>
         <span className="cyber-time">{time}</span>
-        <span className="volume-label">VOL</span>
-        <input
-          className="cyber-volume"
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          defaultValue="1"
-          aria-label="Volume"
-          onInput={(event) => {
-            if (audioRef.current) audioRef.current.volume = Number(event.currentTarget.value);
-          }}
-        />
       </div>
     </>
   );
 }
 
-function TrackCard({ track, category, playerId, currentSrc, activePlayback, setActivePlayback, playerCommand }) {
+function TrackCard({
+  track,
+  category,
+  playerId,
+  currentSrc,
+  activePlayback,
+  setActivePlayback,
+  playerCommand,
+  volume,
+}) {
   const categoryLabel = category?.label || labelFromCategoryValue(track.category);
   const categoryColor = normalizeCategoryColor(category?.color);
   const tags = track.tags?.length ? track.tags : [categoryLabel];
@@ -228,6 +231,7 @@ function TrackCard({ track, category, playerId, currentSrc, activePlayback, setA
         activePlayback={activePlayback}
         setActivePlayback={setActivePlayback}
         playerCommand={playerCommand}
+        volume={volume}
       />
       {secondaryTags.length ? (
         <div className="chips">
@@ -274,6 +278,7 @@ function TrackGrid({
   activePlayback,
   setActivePlayback,
   playerCommand,
+  volume,
 }) {
   const visibleTracks = showAll ? tracks : tracks.slice(0, previewLimit);
   const hasMore = tracks.length > previewLimit;
@@ -291,6 +296,7 @@ function TrackGrid({
             activePlayback={activePlayback}
             setActivePlayback={setActivePlayback}
             playerCommand={playerCommand}
+            volume={volume}
           />
         ))}
       </div>
@@ -305,7 +311,7 @@ function TrackGrid({
   );
 }
 
-function MiniPlayer({ activePlayback, issuePlayerCommand }) {
+function MiniPlayer({ activePlayback, issuePlayerCommand, volume, setVolume }) {
   if (!activePlayback?.src) return null;
 
   function seek(event) {
@@ -358,6 +364,18 @@ function MiniPlayer({ activePlayback, issuePlayerCommand }) {
       <span className="mini-player-time">
         {activePlayback.time || "0:00"} / {activePlayback.duration || "0:00"}
       </span>
+      <label className="mini-player-volume">
+        <span>VOL</span>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          aria-label="Volume"
+          onChange={(event) => setVolume(Number(event.currentTarget.value))}
+        />
+      </label>
     </div>
   );
 }
@@ -413,8 +431,10 @@ export function Portfolio({ content }) {
   const [showAllPersonalTracks, setShowAllPersonalTracks] = useState(false);
   const [trackPreviewLimit, setTrackPreviewLimit] = useState(DESKTOP_TRACK_PREVIEW_COUNT);
   const [playerCommand, setPlayerCommand] = useState(null);
+  const [volume, setVolume] = useState(1);
   const adminClickCountRef = useRef(0);
   const adminClickTimerRef = useRef(null);
+  const lightboxTouchStartRef = useRef(null);
   const currentSrc = activePlayback?.src || "";
   const categories = (content.categories?.length ? content.categories : defaultTrackCategories).map((category) =>
     normalizeCategory(category),
@@ -564,6 +584,29 @@ export function Portfolio({ content }) {
       if (current === null || !fanartLightboxItems.length) return current;
       return (current + direction + fanartLightboxItems.length) % fanartLightboxItems.length;
     });
+  }
+
+  function handleLightboxTouchStart(event) {
+    const touch = event.touches[0];
+    lightboxTouchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+    };
+  }
+
+  function handleLightboxTouchEnd(event) {
+    const start = lightboxTouchStartRef.current;
+    const touch = event.changedTouches[0];
+    lightboxTouchStartRef.current = null;
+
+    if (!start || !touch) return;
+
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+
+    if (Math.abs(deltaX) > 48 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+      moveLightbox(deltaX < 0 ? 1 : -1);
+    }
   }
 
   function handleLogoClick(event) {
@@ -774,6 +817,7 @@ export function Portfolio({ content }) {
             activePlayback={activePlayback}
             setActivePlayback={setActivePlayback}
             playerCommand={playerCommand}
+            volume={volume}
           />
         </section>
 
@@ -795,6 +839,7 @@ export function Portfolio({ content }) {
               activePlayback={activePlayback}
               setActivePlayback={setActivePlayback}
               playerCommand={playerCommand}
+              volume={volume}
             />
           </div>
         </section>
@@ -922,6 +967,8 @@ export function Portfolio({ content }) {
           aria-modal="true"
           aria-label="Artwork preview"
           onClick={() => setLightbox(null)}
+          onTouchStart={handleLightboxTouchStart}
+          onTouchEnd={handleLightboxTouchEnd}
         >
           <div className="lightbox-panel" onClick={(event) => event.stopPropagation()}>
             <button className="lightbox-close" type="button" onClick={() => setLightbox(null)}>
@@ -932,7 +979,9 @@ export function Portfolio({ content }) {
                 Prev
               </button>
             ) : null}
-            <img id="lightbox-img" src={lightboxItem.src} alt={lightboxItem.title} />
+            <div className="lightbox-image-stage">
+              <img id="lightbox-img" src={lightboxItem.src} alt={lightboxItem.title} />
+            </div>
             {fanartLightboxItems.length > 1 ? (
               <button className="lightbox-nav next" type="button" onClick={() => moveLightbox(1)}>
                 Next
@@ -949,7 +998,12 @@ export function Portfolio({ content }) {
         </div>
       ) : null}
 
-      <MiniPlayer activePlayback={activePlayback} issuePlayerCommand={issuePlayerCommand} />
+      <MiniPlayer
+        activePlayback={activePlayback}
+        issuePlayerCommand={issuePlayerCommand}
+        volume={volume}
+        setVolume={setVolume}
+      />
     </>
   );
 }
