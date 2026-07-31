@@ -246,6 +246,86 @@ function TrackCard({
   );
 }
 
+function TrackListRow({
+  track,
+  category,
+  playerId,
+  currentSrc,
+  activePlayback,
+  setActivePlayback,
+  playerCommand,
+  volume,
+}) {
+  const categoryLabel = category?.label || labelFromCategoryValue(track.category);
+  const categoryColor = normalizeCategoryColor(category?.color);
+  const tags = track.tags?.length ? track.tags : [categoryLabel];
+  const secondaryTags = tags.filter((tag) => tag.toLowerCase() !== categoryLabel.toLowerCase());
+
+  return (
+    <div
+      className={`track-list-row ${currentSrc === track.file ? "playing" : ""}`}
+      data-category={track.category || ""}
+      data-player-id={playerId}
+      style={{ "--track-color": categoryColor }}
+    >
+      <div
+        className="track-list-icon"
+        style={{ "--track-color": categoryColor }}
+        aria-label={categoryLabel}
+      >
+        <CategoryIcon icon={category?.icon} />
+      </div>
+      <div className="track-list-copy">
+        <div className="track-list-title-row">
+          <h3>
+            <TrackTitle track={track} />
+          </h3>
+          <span>{categoryLabel}</span>
+        </div>
+        <p>{track.description}</p>
+        {secondaryTags.length ? (
+          <div className="track-list-tags">
+            {secondaryTags.map((tag) => (
+              <span key={tag}>{tag}</span>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <Player
+        track={track}
+        playerId={playerId}
+        activePlayback={activePlayback}
+        setActivePlayback={setActivePlayback}
+        playerCommand={playerCommand}
+        volume={volume}
+      />
+    </div>
+  );
+}
+
+function TrackViewToggle({ value, onChange }) {
+  return (
+    <div className="track-view-toggle" aria-label="Track layout">
+      <button
+        type="button"
+        className={value === "cards" ? "active" : ""}
+        onClick={() => onChange("cards")}
+        aria-pressed={value === "cards"}
+      >
+        Cards
+      </button>
+      <button
+        type="button"
+        className={value === "compact" ? "active" : ""}
+        onClick={() => onChange("compact")}
+        aria-pressed={value === "compact"}
+      >
+        List
+      </button>
+    </div>
+  );
+}
+
 function externalLinkProps(href) {
   return typeof href === "string" && href.startsWith("http")
     ? { target: "_blank", rel: "noopener noreferrer" }
@@ -279,15 +359,17 @@ function TrackGrid({
   setActivePlayback,
   playerCommand,
   volume,
+  viewMode = "cards",
 }) {
   const visibleTracks = showAll ? tracks : tracks.slice(0, previewLimit);
   const hasMore = tracks.length > previewLimit;
+  const TrackItem = viewMode === "compact" ? TrackListRow : TrackCard;
 
   return (
     <>
-      <div className="grid track-grid">
+      <div className={viewMode === "compact" ? "track-list" : "grid track-grid"}>
         {visibleTracks.map((track) => (
-          <TrackCard
+          <TrackItem
             key={`${track.title}-${track.file}`}
             track={track}
             category={getCategory(categories, track.category)}
@@ -364,6 +446,14 @@ function MiniPlayer({ activePlayback, issuePlayerCommand, volume, setVolume }) {
       <span className="mini-player-time">
         {activePlayback.time || "0:00"} / {activePlayback.duration || "0:00"}
       </span>
+      <button
+        className="mini-player-locate"
+        type="button"
+        onClick={scrollToTrack}
+        aria-label={`Jump to ${activePlayback.title}`}
+      >
+        Track
+      </button>
       <label className="mini-player-volume">
         <span>VOL</span>
         <input
@@ -382,12 +472,36 @@ function MiniPlayer({ activePlayback, issuePlayerCommand, volume, setVolume }) {
 
 function Background() {
   const [stars, setStars] = useState([]);
+  const [starCount, setStarCount] = useState(110);
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia("(max-width: 760px)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function updateStarCount() {
+      if (reducedMotionQuery.matches) {
+        setStarCount(34);
+        return;
+      }
+
+      setStarCount(mobileQuery.matches ? 64 : 110);
+    }
+
+    updateStarCount();
+    mobileQuery.addEventListener("change", updateStarCount);
+    reducedMotionQuery.addEventListener("change", updateStarCount);
+
+    return () => {
+      mobileQuery.removeEventListener("change", updateStarCount);
+      reducedMotionQuery.removeEventListener("change", updateStarCount);
+    };
+  }, []);
 
   useEffect(() => {
     const colors = ["", "cyan", "pink"];
 
     setStars(
-      Array.from({ length: 130 }, (_, index) => ({
+      Array.from({ length: starCount }, (_, index) => ({
         id: index,
         color: colors[Math.floor(Math.random() * colors.length)],
         big: Math.random() > 0.86,
@@ -397,7 +511,7 @@ function Background() {
         duration: `${2.5 + Math.random() * 2}s, ${55 + Math.random() * 30}s`,
       })),
     );
-  }, []);
+  }, [starCount]);
 
   return (
     <>
@@ -429,6 +543,7 @@ export function Portfolio({ content }) {
   const [showAllGameTracks, setShowAllGameTracks] = useState(false);
   const [showAllPersonalTracks, setShowAllPersonalTracks] = useState(false);
   const [trackPreviewLimit, setTrackPreviewLimit] = useState(DESKTOP_TRACK_PREVIEW_COUNT);
+  const [trackViewMode, setTrackViewMode] = useState("cards");
   const [playerCommand, setPlayerCommand] = useState(null);
   const [volume, setVolume] = useState(1);
   const adminClickCountRef = useRef(0);
@@ -482,6 +597,10 @@ export function Portfolio({ content }) {
   useEffect(() => {
     setShowAllGameTracks(false);
   }, [filter]);
+
+  useEffect(() => {
+    setActivePlayback(null);
+  }, [trackViewMode]);
 
   useEffect(() => {
     const visibility = new Map();
@@ -739,10 +858,21 @@ export function Portfolio({ content }) {
           </p>
           <div className="news-projects" aria-label="Project news">
             <div className="news-log-panel">
+              <div className="news-log-header">
+                <span>Latest notes</span>
+                <strong>{content.projects[0]?.title || "Project updates"}</strong>
+                <em>{content.projects.length} entries</em>
+              </div>
               <div className="news-project-grid">
-                {content.projects.map((project) => (
-                  <article className="log-entry" key={project.title}>
-                    <div className="log-date">{project.status}</div>
+                {content.projects.map((project, index) => (
+                  <article
+                    className={`log-entry ${index === 0 ? "latest" : ""}`}
+                    key={`${project.title}-${index}`}
+                  >
+                    <div className="log-date">
+                      <span>{index === 0 ? "Latest" : String(index + 1).padStart(2, "0")}</span>
+                      <em>{project.status}</em>
+                    </div>
                     <div className="log-entry-main">
                       <strong>{project.title}</strong>
                       <p>{project.description}</p>
@@ -775,19 +905,22 @@ export function Portfolio({ content }) {
           <p style={{ opacity: 0.7, marginBottom: 20 }}>
             All game tracks are loop-ready and designed for seamless in-game use.
           </p>
-          <div className="filters">
-            {[{ value: "all", label: "All", color: "#00e5ff" }, ...gameCategories].map((category) => (
-              <button
-                className={`filter-btn ${filter === category.value ? "active" : ""}`}
-                data-filter={category.value}
-                type="button"
-                key={category.value}
-                style={{ "--track-color": normalizeCategoryColor(category.color) }}
-                onClick={() => setFilter(category.value)}
-              >
-                {category.label}
-              </button>
-            ))}
+          <div className="track-toolbar">
+            <div className="filters">
+              {[{ value: "all", label: "All", color: "#00e5ff" }, ...gameCategories].map((category) => (
+                <button
+                  className={`filter-btn ${filter === category.value ? "active" : ""}`}
+                  data-filter={category.value}
+                  type="button"
+                  key={category.value}
+                  style={{ "--track-color": normalizeCategoryColor(category.color) }}
+                  onClick={() => setFilter(category.value)}
+                >
+                  {category.label}
+                </button>
+              ))}
+            </div>
+            <TrackViewToggle value={trackViewMode} onChange={setTrackViewMode} />
           </div>
           <TrackGrid
             tracks={filteredTracks}
@@ -801,6 +934,7 @@ export function Portfolio({ content }) {
             setActivePlayback={setActivePlayback}
             playerCommand={playerCommand}
             volume={volume}
+            viewMode={trackViewMode}
           />
         </section>
 
@@ -811,6 +945,10 @@ export function Portfolio({ content }) {
             <p style={{ opacity: 0.7, marginBottom: 24 }}>
               You can listen to the full versions of these personal tracks on all major platforms.
             </p>
+            <div className="personal-track-toolbar">
+              <span>Release previews</span>
+              <TrackViewToggle value={trackViewMode} onChange={setTrackViewMode} />
+            </div>
             <TrackGrid
               tracks={content.personalTracks}
               categories={categories}
@@ -823,6 +961,7 @@ export function Portfolio({ content }) {
               setActivePlayback={setActivePlayback}
               playerCommand={playerCommand}
               volume={volume}
+              viewMode={trackViewMode}
             />
           </div>
         </section>
@@ -977,6 +1116,21 @@ export function Portfolio({ content }) {
                 {lightbox + 1} / {fanartLightboxItems.length}
               </em>
             </div>
+            {fanartLightboxItems.length > 1 ? (
+              <div className="lightbox-strip" aria-label="Artwork thumbnails">
+                {fanartLightboxItems.map((item, index) => (
+                  <button
+                    className={index === lightbox ? "active" : ""}
+                    type="button"
+                    key={`${item.src}-${index}`}
+                    onClick={() => setLightbox(index)}
+                    aria-label={`Show ${item.title}`}
+                  >
+                    <img src={item.src} alt="" />
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}
