@@ -31,10 +31,10 @@ export const metadata = {
     siteName: "ElectroBeaty",
     images: [
       {
-        url: "/moe-dancefloor.jpg",
-        width: 1280,
-        height: 720,
-        alt: "MOE DANCEFLOOR compilation artwork",
+        url: "/profilbild.png",
+        width: 500,
+        height: 500,
+        alt: "ElectroBeaty profile artwork",
       },
     ],
     type: "website",
@@ -43,7 +43,7 @@ export const metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/moe-dancefloor.jpg"],
+    images: ["/profilbild.png"],
   },
   icons: {
     icon: "/favicon.ico",
