@@ -23,6 +23,69 @@ const SECTION_MARKERS = [
 ];
 const DESKTOP_TRACK_PREVIEW_COUNT = 6;
 const MOBILE_TRACK_PREVIEW_COUNT = 3;
+const SOCIAL_LINKS = [
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/@ElectroBeaty",
+    icon: "youtube",
+  },
+  {
+    label: "Spotify",
+    href: "https://open.spotify.com/intl-de/artist/75g7C74FQ7UaWhFqH0viPC?si=yGFST6KkR7-CHiSPFUJNSA",
+    icon: "spotify",
+  },
+  {
+    label: "SoundCloud",
+    href: "https://soundcloud.com/electrobeaty",
+    icon: "soundcloud",
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/erik_hrdl/",
+    icon: "instagram",
+  },
+];
+
+function SocialIcon({ icon }) {
+  if (icon === "youtube") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="3" y="6.5" width="18" height="11" rx="3.2" />
+        <path d="m10.4 9.2 4.6 2.8-4.6 2.8V9.2Z" />
+      </svg>
+    );
+  }
+
+  if (icon === "spotify") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="8.6" />
+        <path d="M7.8 9.7c3-1 6.3-.8 8.8.6" />
+        <path d="M8.4 12.4c2.3-.7 5-.5 7 .5" />
+        <path d="M9 15c1.7-.4 3.8-.3 5.2.5" />
+      </svg>
+    );
+  }
+
+  if (icon === "soundcloud") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 15.4h10.9a4.2 4.2 0 1 0-.7-8.3 5.1 5.1 0 0 0-9.8 2.1A3.1 3.1 0 0 0 4 15.4Z" />
+        <path d="M7.2 8.8v6.6" />
+        <path d="M9.3 7.2v8.2" />
+        <path d="M11.4 7.8v7.6" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="5" y="5" width="14" height="14" rx="4" />
+      <circle cx="12" cy="12" r="3.4" />
+      <path d="M16.4 7.8h.1" />
+    </svg>
+  );
+}
 
 function TrackTitle({ track }) {
   return (
@@ -784,6 +847,7 @@ export function Portfolio({ content }) {
                 <img src="/profilbild.png" alt="electrobeaty mascot" />
               </div>
             </div>
+            <h1 className="hero-brand-title">ElectroBeaty</h1>
             <div className="hud-row">
               <span className="hud">Collaboration</span>
               <span className="hud flicker">Status: Online</span>
@@ -1078,6 +1142,20 @@ export function Portfolio({ content }) {
       </main>
 
       <footer>
+        <nav className="footer-social-strip" aria-label="ElectroBeaty social links">
+          {SOCIAL_LINKS.map((link) => (
+            <a
+              className={`footer-social-link ${link.icon}`}
+              href={link.href}
+              key={link.href}
+              aria-label={`ElectroBeaty on ${link.label}`}
+              {...externalLinkProps(link.href)}
+            >
+              <SocialIcon icon={link.icon} />
+              <span>{link.label}</span>
+            </a>
+          ))}
+        </nav>
         <p style={{ opacity: 0.6, fontSize: 12 }}>
           © 2026 electrobeaty - Music by electrobeaty. Artwork belongs to their respective artists.
         </p>
