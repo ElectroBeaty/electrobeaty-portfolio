@@ -1107,7 +1107,7 @@ export function Portfolio({ content }) {
           <h2>About & Contact</h2>
           <div className="panel">
             <p style={{ fontWeight: 500 }}>
-              I am ElectroBeaty, also known as Beaty and EBeaty, an Austrian electronic music
+              I am ElectroBeaty, also known as EBeaty or Beaty, an Austrian electronic music
               composer and producer.
             </p>
             <p style={{ marginTop: 14 }}>

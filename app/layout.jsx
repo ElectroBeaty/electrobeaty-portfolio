@@ -1,9 +1,10 @@
 import "./globals.css";
 
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://electrobeaty.vercel.app").replace(
-  /\/$/,
-  "",
-);
+const preferredSiteUrl = "https://electrobeaty.vercel.app";
+const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL || preferredSiteUrl).replace(/\/$/, "");
+const siteUrl = configuredSiteUrl.includes("electrobeaty-portfolio.vercel.app")
+  ? preferredSiteUrl
+  : configuredSiteUrl;
 const title = "ElectroBeaty - Game Music Portfolio";
 const description =
   "ElectroBeaty is an Austrian electronic music composer and producer creating funky, anime-inspired, and J-core-heavy electronic music, with recent work in game audio.";
@@ -24,7 +25,7 @@ const structuredData = {
       "@type": "Person",
       "@id": `${siteUrl}/#electrobeaty`,
       name: "ElectroBeaty",
-      alternateName: ["Beaty", "EBeaty"],
+      alternateName: ["EBeaty", "Beaty"],
       url: siteUrl,
       image: profileImage,
       description,
@@ -65,6 +66,9 @@ const structuredData = {
       isPartOf: {
         "@id": `${siteUrl}/#website`,
       },
+      mainEntity: {
+        "@id": `${siteUrl}/#electrobeaty`,
+      },
       about: {
         "@id": `${siteUrl}/#electrobeaty`,
       },
@@ -87,8 +91,8 @@ export const metadata = {
   description,
   keywords: [
     "ElectroBeaty",
-    "Beaty",
     "EBeaty",
+    "Beaty",
     "Austrian electronic music composer",
     "funky electronic music",
     "anime inspired music",
