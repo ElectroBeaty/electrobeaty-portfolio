@@ -4159,6 +4159,11 @@ select {
   backdrop-filter: blur(12px);
 }
 
+.about-social-strip {
+  margin-top: 24px;
+  margin-bottom: 0;
+}
+
 .footer-social-link {
   --social-color: var(--cyan);
   display: inline-flex;
@@ -4229,6 +4234,10 @@ select {
     0 0 28px rgba(0,229,255,0.1),
     inset 0 0 18px rgba(255,255,255,0.04);
   transform: translateY(-2px);
+}
+
+footer {
+  padding-top: 20px;
 }
 
 .track-toolbar {

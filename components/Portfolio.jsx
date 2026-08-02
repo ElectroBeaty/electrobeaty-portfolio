@@ -1111,16 +1111,16 @@ export function Portfolio({ content }) {
               composer and producer.
             </p>
             <p style={{ marginTop: 14 }}>
-              Since 2016, I have been creating original music for games, emotional storytelling,
-              and standalone electronic releases.
+              Since 2016, I have been creating original electronic music from ideas, moods, and
+              sounds that came to mind.
             </p>
             <p style={{ marginTop: 14 }}>
-              My music combines electronic production, orchestral elements, cinematic atmospheres,
-              and experimental sound design to create immersive experiences.
+              My sound is mostly funky, anime-inspired, and J-core-heavy, with energetic electronic
+              production, emotional melodies, and playful sound design.
             </p>
             <p style={{ marginTop: 18 }}>
-              Besides composing for games, I also produce original tracks across multiple genres and
-              enjoy exploring new musical styles.
+              More recently, I started bringing that style into game music and game audio, creating
+              tracks for projects, atmospheres, menus, and character-driven moments.
             </p>
             <p style={{ marginTop: 14, opacity: 0.6, fontSize: 13, textAlign: "center" }}>
               Feel free to reach out for collaborations or game projects.
@@ -1138,24 +1138,24 @@ export function Portfolio({ content }) {
               ))}
             </div>
           </div>
+          <nav className="footer-social-strip about-social-strip" aria-label="ElectroBeaty social links">
+            {SOCIAL_LINKS.map((link) => (
+              <a
+                className={`footer-social-link ${link.icon}`}
+                href={link.href}
+                key={link.href}
+                aria-label={`ElectroBeaty on ${link.label}`}
+                {...externalLinkProps(link.href)}
+              >
+                <SocialIcon icon={link.icon} />
+                <span>{link.label}</span>
+              </a>
+            ))}
+          </nav>
         </section>
       </main>
 
       <footer>
-        <nav className="footer-social-strip" aria-label="ElectroBeaty social links">
-          {SOCIAL_LINKS.map((link) => (
-            <a
-              className={`footer-social-link ${link.icon}`}
-              href={link.href}
-              key={link.href}
-              aria-label={`ElectroBeaty on ${link.label}`}
-              {...externalLinkProps(link.href)}
-            >
-              <SocialIcon icon={link.icon} />
-              <span>{link.label}</span>
-            </a>
-          ))}
-        </nav>
         <p style={{ opacity: 0.6, fontSize: 12 }}>
           © 2026 electrobeaty - Music by electrobeaty. Artwork belongs to their respective artists.
         </p>
