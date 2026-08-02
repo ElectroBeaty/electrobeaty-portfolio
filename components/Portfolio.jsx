@@ -1043,18 +1043,20 @@ export function Portfolio({ content }) {
           <h2>About & Contact</h2>
           <div className="panel">
             <p style={{ fontWeight: 500 }}>
-              I'm a 24-year-old composer from Austria, working in FL Studio.
+              I am ElectroBeaty, also known as Beaty and EBeaty, an Austrian electronic music
+              composer and producer.
             </p>
             <p style={{ marginTop: 14 }}>
-              I create music for games with a focus on atmosphere, emotion, and gameplay-driven
-              sound.
+              Since 2016, I have been creating original music for games, emotional storytelling,
+              and standalone electronic releases.
             </p>
             <p style={{ marginTop: 14 }}>
-              From intense combat to quiet menus or story moments, I aim to find the sound that fits
-              the experience.
+              My music combines electronic production, orchestral elements, cinematic atmospheres,
+              and experimental sound design to create immersive experiences.
             </p>
             <p style={{ marginTop: 18 }}>
-              I also produce standalone tracks across different styles.
+              Besides composing for games, I also produce original tracks across multiple genres and
+              enjoy exploring new musical styles.
             </p>
             <p style={{ marginTop: 14, opacity: 0.6, fontSize: 13, textAlign: "center" }}>
               Feel free to reach out for collaborations or game projects.
