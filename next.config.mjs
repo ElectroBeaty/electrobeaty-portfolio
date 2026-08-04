@@ -8,7 +8,7 @@ const nextConfig = {
     return legacyHosts.map((host) => ({
       source: "/:path*",
       has: [{ type: "host", value: host }],
-      destination: "https://electrobeaty.com/:path*",
+      destination: "https://www.electrobeaty.com/:path*",
       permanent: true,
     }));
   },
