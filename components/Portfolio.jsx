@@ -962,7 +962,7 @@ export function Portfolio({ content }) {
             <div className="news-log-panel">
               <div className="news-log-header">
                 <span>Update log</span>
-                <strong>{content.projects[0]?.title || "Project updates"}</strong>
+                <strong>Project Timeline</strong>
                 <em>{content.projects.length} entries</em>
               </div>
               <div className="news-project-grid">
