@@ -23,6 +23,7 @@ const SECTION_MARKERS = [
 ];
 const DESKTOP_TRACK_PREVIEW_COUNT = 6;
 const MOBILE_TRACK_PREVIEW_COUNT = 3;
+const SECTION_SCROLL_OFFSET = 48;
 const SOCIAL_LINKS = [
   {
     label: "YouTube",
@@ -736,6 +737,17 @@ export function Portfolio({ content }) {
   }, []);
 
   useEffect(() => {
+    const initialSection = window.location.hash.slice(1);
+    if (!initialSection) return undefined;
+
+    const timeout = window.setTimeout(() => {
+      scrollToSection(null, initialSection);
+    }, 120);
+
+    return () => window.clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
     if (lightbox === null) return undefined;
 
     function handleKey(event) {
@@ -810,9 +822,26 @@ export function Portfolio({ content }) {
       return;
     }
 
+    scrollToSection(event, "home");
+
     adminClickTimerRef.current = window.setTimeout(() => {
       adminClickCountRef.current = 0;
     }, 2400);
+  }
+
+  function scrollToSection(event, id) {
+    event?.preventDefault();
+
+    const section = document.getElementById(id);
+    if (!section) return;
+
+    const top =
+      id === "home"
+        ? 0
+        : Math.max(section.getBoundingClientRect().top + window.scrollY + SECTION_SCROLL_OFFSET, 0);
+
+    window.history.pushState(null, "", `#${id}`);
+    window.scrollTo({ top, behavior: "smooth" });
   }
 
   async function copyContactEmail() {
@@ -831,15 +860,15 @@ export function Portfolio({ content }) {
 
       <header className={`top-header ${headerDocked ? "is-docked" : ""}`}>
         <div className="nav-left">
-          <a href="#home">Home</a>
-          <a href="#music">Tracks</a>
+          <a href="#home" onClick={(event) => scrollToSection(event, "home")}>Home</a>
+          <a href="#music" onClick={(event) => scrollToSection(event, "music")}>Tracks</a>
         </div>
         <a className="top-logo" href="#home" aria-label="ElectroBeaty Home" onClick={handleLogoClick}>
           <img src="/electrobeaty-logo.png" alt="ElectroBeaty Logo" />
         </a>
         <div className="nav-right">
-          <a href="#fanart">Fanart</a>
-          <a href="#about">Contact</a>
+          <a href="#fanart" onClick={(event) => scrollToSection(event, "fanart")}>Fanart</a>
+          <a href="#about" onClick={(event) => scrollToSection(event, "about")}>Contact</a>
         </div>
       </header>
 
@@ -852,6 +881,7 @@ export function Portfolio({ content }) {
               className={activeSection === section.id ? "active" : ""}
               aria-current={activeSection === section.id ? "location" : undefined}
               data-step={String(index + 1).padStart(2, "0")}
+              onClick={(event) => scrollToSection(event, section.id)}
             >
               <span>{section.navLabel || section.label}</span>
             </a>
@@ -971,6 +1001,11 @@ export function Portfolio({ content }) {
                               className="fanart-btn"
                               href={link.href}
                               key={link.href}
+                              onClick={
+                                link.href?.startsWith("#")
+                                  ? (event) => scrollToSection(event, link.href.slice(1))
+                                  : undefined
+                              }
                               {...externalLinkProps(link.href)}
                             >
                               {link.label}
