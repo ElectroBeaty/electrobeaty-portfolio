@@ -130,7 +130,6 @@ window.portfolioData = {
   ],
 
   contactLinks: [
-    { label: "Email", href: "mailto:contact@electrobeaty.com" },
     { label: "itch.io", href: "https://ebeaty.itch.io" },
     { label: "Linktree", href: "https://linktr.ee/electrobeaty" }
   ]

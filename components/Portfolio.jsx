@@ -46,7 +46,6 @@ const SOCIAL_LINKS = [
     icon: "instagram",
   },
 ];
-const CONTACT_EMAIL = "contact@electrobeaty.com";
 
 function SocialIcon({ icon }) {
   if (icon === "youtube") {
@@ -611,7 +610,6 @@ export function Portfolio({ content }) {
   const [trackViewMode, setTrackViewMode] = useState("cards");
   const [playerCommand, setPlayerCommand] = useState(null);
   const [volume, setVolume] = useState(1);
-  const [copiedEmail, setCopiedEmail] = useState(false);
   const adminClickCountRef = useRef(0);
   const adminClickTimerRef = useRef(null);
   const lightboxTouchStartRef = useRef(null);
@@ -639,16 +637,12 @@ export function Portfolio({ content }) {
   );
   const lightboxItem = lightbox !== null ? fanartLightboxItems[lightbox] : null;
   const visibleContactLinks = useMemo(() => {
-    const emailHref = `mailto:${CONTACT_EMAIL}`;
     const existingLinks = Array.isArray(content.contactLinks) ? content.contactLinks : [];
 
-    return [
-      { label: "Email", href: emailHref },
-      ...existingLinks.filter((link) => {
-        const href = String(link?.href || "").trim().toLowerCase();
-        return href !== emailHref && href !== CONTACT_EMAIL;
-      }),
-    ];
+    return existingLinks.filter((link) => {
+      const href = String(link?.href || "").trim().toLowerCase();
+      return !href.startsWith("mailto:") && href !== "contact@electrobeaty.com";
+    });
   }, [content.contactLinks]);
 
   useEffect(() => {
@@ -842,16 +836,6 @@ export function Portfolio({ content }) {
 
     window.history.pushState(null, "", `#${id}`);
     window.scrollTo({ top, behavior: "smooth" });
-  }
-
-  async function copyContactEmail() {
-    try {
-      await navigator.clipboard.writeText(CONTACT_EMAIL);
-      setCopiedEmail(true);
-      window.setTimeout(() => setCopiedEmail(false), 1800);
-    } catch {
-      window.location.href = `mailto:${CONTACT_EMAIL}`;
-    }
   }
 
   return (
@@ -1186,26 +1170,14 @@ export function Portfolio({ content }) {
             </p>
             <div className="contact-links">
               {visibleContactLinks.map((link) => (
-                link.href === `mailto:${CONTACT_EMAIL}` ? (
-                  <button
-                    className="main-btn"
-                    type="button"
-                    key={link.href}
-                    onClick={copyContactEmail}
-                    aria-label={`Copy ${CONTACT_EMAIL}`}
-                  >
-                    {copiedEmail ? "Email copied" : "Email"}
-                  </button>
-                ) : (
-                  <a
-                    className="main-btn"
-                    href={link.href}
-                    key={link.href}
-                    {...externalLinkProps(link.href)}
-                  >
-                    {link.label}
-                  </a>
-                )
+                <a
+                  className="main-btn"
+                  href={link.href}
+                  key={link.href}
+                  {...externalLinkProps(link.href)}
+                >
+                  {link.label}
+                </a>
               ))}
             </div>
           </div>
