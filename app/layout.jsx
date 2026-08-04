@@ -1,10 +1,7 @@
 import "./globals.css";
+import { getSiteUrl } from "@/lib/site-url";
 
-const preferredSiteUrl = "https://electrobeaty.vercel.app";
-const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL || preferredSiteUrl).replace(/\/$/, "");
-const siteUrl = configuredSiteUrl.includes("electrobeaty-portfolio.vercel.app")
-  ? preferredSiteUrl
-  : configuredSiteUrl;
+const siteUrl = getSiteUrl();
 const title = "ElectroBeaty - Game Music Portfolio";
 const description =
   "ElectroBeaty is an Austrian electronic music composer and producer creating funky, anime-inspired, and J-core-heavy electronic music, with recent work in game audio.";
