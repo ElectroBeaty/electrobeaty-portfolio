@@ -1446,7 +1446,7 @@
     }
 
     section.content-section {
-      scroll-margin-top: 8px;
+      scroll-margin-top: clamp(70px, 8vh, 110px);
       isolation: isolate;
     }
 

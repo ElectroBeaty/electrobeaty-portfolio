@@ -6,6 +6,7 @@ const title = "ElectroBeaty - Game Music Portfolio";
 const description =
   "ElectroBeaty is an Austrian electronic music composer and producer creating funky, anime-inspired, and J-core-heavy electronic music, with recent work in game audio.";
 const profileImage = `${siteUrl}/profilbild.png`;
+const contactEmail = "contact@electrobeaty.com";
 const socialLinks = [
   "https://www.youtube.com/@ElectroBeaty",
   "https://open.spotify.com/intl-de/artist/75g7C74FQ7UaWhFqH0viPC",
@@ -25,6 +26,7 @@ const structuredData = {
       alternateName: ["EBeaty", "Beaty"],
       url: siteUrl,
       image: profileImage,
+      email: contactEmail,
       description,
       jobTitle: "Electronic music composer and producer",
       nationality: {
@@ -42,6 +44,12 @@ const structuredData = {
         "experimental sound design",
       ],
       sameAs: socialLinks,
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: contactEmail,
+        contactType: "collaborations and game projects",
+        availableLanguage: ["en", "de"],
+      },
     },
     {
       "@type": "WebSite",

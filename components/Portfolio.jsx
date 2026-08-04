@@ -45,6 +45,7 @@ const SOCIAL_LINKS = [
     icon: "instagram",
   },
 ];
+const CONTACT_EMAIL = "contact@electrobeaty.com";
 
 function SocialIcon({ icon }) {
   if (icon === "youtube") {
@@ -609,6 +610,7 @@ export function Portfolio({ content }) {
   const [trackViewMode, setTrackViewMode] = useState("cards");
   const [playerCommand, setPlayerCommand] = useState(null);
   const [volume, setVolume] = useState(1);
+  const [copiedEmail, setCopiedEmail] = useState(false);
   const adminClickCountRef = useRef(0);
   const adminClickTimerRef = useRef(null);
   const lightboxTouchStartRef = useRef(null);
@@ -635,6 +637,18 @@ export function Portfolio({ content }) {
     [content.fanart],
   );
   const lightboxItem = lightbox !== null ? fanartLightboxItems[lightbox] : null;
+  const visibleContactLinks = useMemo(() => {
+    const emailHref = `mailto:${CONTACT_EMAIL}`;
+    const existingLinks = Array.isArray(content.contactLinks) ? content.contactLinks : [];
+
+    return [
+      { label: "Email", href: emailHref },
+      ...existingLinks.filter((link) => {
+        const href = String(link?.href || "").trim().toLowerCase();
+        return href !== emailHref && href !== CONTACT_EMAIL;
+      }),
+    ];
+  }, [content.contactLinks]);
 
   useEffect(() => {
     return () => {
@@ -799,6 +813,16 @@ export function Portfolio({ content }) {
     adminClickTimerRef.current = window.setTimeout(() => {
       adminClickCountRef.current = 0;
     }, 2400);
+  }
+
+  async function copyContactEmail() {
+    try {
+      await navigator.clipboard.writeText(CONTACT_EMAIL);
+      setCopiedEmail(true);
+      window.setTimeout(() => setCopiedEmail(false), 1800);
+    } catch {
+      window.location.href = `mailto:${CONTACT_EMAIL}`;
+    }
   }
 
   return (
@@ -1126,15 +1150,27 @@ export function Portfolio({ content }) {
               Feel free to reach out for collaborations or game projects.
             </p>
             <div className="contact-links">
-              {content.contactLinks.map((link) => (
-                <a
-                  className="main-btn"
-                  href={link.href}
-                  key={link.href}
-                  {...externalLinkProps(link.href)}
-                >
-                  {link.label}
-                </a>
+              {visibleContactLinks.map((link) => (
+                link.href === `mailto:${CONTACT_EMAIL}` ? (
+                  <button
+                    className="main-btn"
+                    type="button"
+                    key={link.href}
+                    onClick={copyContactEmail}
+                    aria-label={`Copy ${CONTACT_EMAIL}`}
+                  >
+                    {copiedEmail ? "Email copied" : "Email"}
+                  </button>
+                ) : (
+                  <a
+                    className="main-btn"
+                    href={link.href}
+                    key={link.href}
+                    {...externalLinkProps(link.href)}
+                  >
+                    {link.label}
+                  </a>
+                )
               ))}
             </div>
           </div>
