@@ -954,53 +954,66 @@ export function Portfolio({ content }) {
 
         <section className="content-section news-section" id="news">
           <div className="section-kicker">News</div>
-          <h2>Projects & Work</h2>
+          <h2>Updates & Releases</h2>
           <p className="news-section-copy">
-            Current project notes, small updates, and work in progress.
+            Selected project milestones, release notes, and portfolio updates.
           </p>
           <div className="news-projects" aria-label="Project news">
             <div className="news-log-panel">
               <div className="news-log-header">
-                <span>Latest notes</span>
+                <span>Update log</span>
                 <strong>{content.projects[0]?.title || "Project updates"}</strong>
                 <em>{content.projects.length} entries</em>
               </div>
               <div className="news-project-grid">
-                {content.projects.map((project, index) => (
-                  <article
-                    className={`log-entry ${index === 0 ? "latest" : ""}`}
-                    key={`${project.title}-${index}`}
-                  >
-                    <div className="log-date">
-                      <span>{index === 0 ? "Latest" : String(index + 1).padStart(2, "0")}</span>
-                      <em>{project.status}</em>
-                    </div>
-                    <div className="log-entry-main">
-                      <strong>{project.title}</strong>
-                      <p>{project.description}</p>
-                      {project.links?.length ? (
-                        <div className="project-actions">
-                          {project.links.map((link) => (
-                            <a
-                              className="fanart-btn"
-                              href={link.href}
-                              key={link.href}
-                              onClick={
-                                link.href?.startsWith("#")
-                                  ? (event) => scrollToSection(event, link.href.slice(1))
-                                  : undefined
-                              }
-                              {...externalLinkProps(link.href)}
-                            >
-                              {link.label}
-                            </a>
-                          ))}
+                {content.projects.map((project, index) => {
+                  const previewImage = project.image || project.previewImage;
+
+                  return (
+                    <article
+                      className={`log-entry ${index === 0 ? "latest" : ""}`}
+                      key={`${project.title}-${index}`}
+                    >
+                      <div className="log-date">
+                        <span>{index === 0 ? "Latest" : String(index + 1).padStart(2, "0")}</span>
+                        <em>{project.status}</em>
+                      </div>
+                      <div className="log-entry-body">
+                        <div className="log-entry-main">
+                          <strong>{project.title}</strong>
+                          <p>{project.description}</p>
+                          {project.links?.length ? (
+                            <div className="project-actions">
+                              {project.links.map((link) => (
+                                <a
+                                  className="fanart-btn"
+                                  href={link.href}
+                                  key={link.href}
+                                  onClick={
+                                    link.href?.startsWith("#")
+                                      ? (event) => scrollToSection(event, link.href.slice(1))
+                                      : undefined
+                                  }
+                                  {...externalLinkProps(link.href)}
+                                >
+                                  {link.label}
+                                </a>
+                              ))}
+                            </div>
+                          ) : null}
+                          {project.note ? <div className="project-note">{project.note}</div> : null}
                         </div>
-                      ) : null}
-                      {project.note ? <div className="project-note">{project.note}</div> : null}
-                    </div>
-                  </article>
-                ))}
+                        <div className={`log-entry-media ${previewImage ? "" : "is-empty"}`}>
+                          {previewImage ? (
+                            <img src={previewImage} alt={`${project.title} preview`} loading="lazy" />
+                          ) : (
+                            <span>Preview pending</span>
+                          )}
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             </div>
           </div>

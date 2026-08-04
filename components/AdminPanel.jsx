@@ -33,6 +33,7 @@ const emptyProject = {
   title: "New Project",
   description: "",
   note: "",
+  image: "",
   links: [],
 };
 
@@ -294,12 +295,18 @@ function AdminTrackPreview({ track, categories }) {
 }
 
 function AdminProjectPreview({ project }) {
+  const previewImage = project.image || project.previewImage;
+
   return (
     <div className="admin-preview admin-preview-news">
-      <span className="admin-preview-status">{project.status || "NEWS"}</span>
+      <span className="admin-preview-thumb admin-preview-news-thumb" aria-hidden="true">
+        {previewImage ? <img src={previewImage} alt="" /> : <CategoryIcon icon="sparkle" />}
+      </span>
       <div>
         <strong>{project.title || "Untitled update"}</strong>
-        <span>{project.description || "No description yet"}</span>
+        <span>
+          {project.status || "NEWS"} / {previewImage ? "Preview linked" : "No preview image"}
+        </span>
       </div>
     </div>
   );
@@ -550,6 +557,11 @@ function ProjectEditor({ projects, onChange }) {
               textarea
               onChange={(value) => update(index, { description: value })}
             />
+            <Field
+              label="Preview-Bild / URL (optional)"
+              value={project.image || ""}
+              onChange={(value) => update(index, { image: value })}
+            />
             <Field label="Notiz" value={project.note || ""} onChange={(value) => update(index, { note: value })} />
             <Field
               label="Links als label|url, mehrere mit Komma"
@@ -564,6 +576,7 @@ function ProjectEditor({ projects, onChange }) {
               }
             />
             <div className="admin-actions">
+              <UploadButton type="image" onUploaded={(url) => update(index, { image: url })} />
               <div className="admin-item-tools">
                 <OrderControls index={index} length={projects.length} onMove={(direction) => move(index, direction)} />
                 <button
