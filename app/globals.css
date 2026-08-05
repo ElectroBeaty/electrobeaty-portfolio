@@ -2583,7 +2583,7 @@
 
 .log-entry {
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr);
+  grid-template-columns: 82px minmax(0, 1fr);
   gap: 14px;
   padding: 14px 0;
   border-top: 1px solid rgba(0,229,255,0.14);
@@ -2737,7 +2737,7 @@
   }
 
   .log-entry {
-    grid-template-columns: 42px minmax(0, 1fr);
+    grid-template-columns: 64px minmax(0, 1fr);
     gap: 10px;
     padding: 12px 0;
   }
@@ -4579,7 +4579,7 @@ footer {
 
 .log-entry {
   position: relative;
-  grid-template-columns: 54px minmax(0, 1fr);
+  grid-template-columns: 82px minmax(0, 1fr);
   padding: 14px 0;
 }
 
@@ -4884,7 +4884,7 @@ footer {
 
   .log-entry,
   .log-entry.latest {
-    grid-template-columns: 42px minmax(0, 1fr);
+    grid-template-columns: 64px minmax(0, 1fr);
     margin-right: 0;
     margin-left: 0;
   }

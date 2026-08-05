@@ -7,11 +7,11 @@ window.portfolioData = {
       date: "",
       image: "",
       links: [
+        { label: "Play Game", href: "https://snailtank.itch.io/anima-fight" },
         {
           label: "Full OST",
           href: "https://electrobeaty.bandcamp.com/album/anima-fight-original-soundtrack"
-        },
-        { label: "Play Game", href: "https://snailtank.itch.io/anima-fight" }
+        }
       ]
     },
     {
