@@ -23,6 +23,8 @@ const SECTION_MARKERS = [
 ];
 const DESKTOP_TRACK_PREVIEW_COUNT = 6;
 const MOBILE_TRACK_PREVIEW_COUNT = 3;
+const DESKTOP_NEWS_PREVIEW_COUNT = 3;
+const MOBILE_NEWS_PREVIEW_COUNT = 2;
 const SECTION_SCROLL_OFFSET = 48;
 const SOCIAL_LINKS = [
   {
@@ -606,7 +608,9 @@ export function Portfolio({ content }) {
   const [headerDocked, setHeaderDocked] = useState(false);
   const [showAllGameTracks, setShowAllGameTracks] = useState(false);
   const [showAllPersonalTracks, setShowAllPersonalTracks] = useState(false);
+  const [showAllNews, setShowAllNews] = useState(false);
   const [trackPreviewLimit, setTrackPreviewLimit] = useState(DESKTOP_TRACK_PREVIEW_COUNT);
+  const [newsPreviewLimit, setNewsPreviewLimit] = useState(DESKTOP_NEWS_PREVIEW_COUNT);
   const [trackViewMode, setTrackViewMode] = useState("cards");
   const [playerCommand, setPlayerCommand] = useState(null);
   const [volume, setVolume] = useState(1);
@@ -636,6 +640,11 @@ export function Portfolio({ content }) {
     [content.fanart],
   );
   const lightboxItem = lightbox !== null ? fanartLightboxItems[lightbox] : null;
+  const visibleNewsProjects = useMemo(
+    () => (showAllNews ? content.projects : content.projects.slice(0, newsPreviewLimit)),
+    [content.projects, newsPreviewLimit, showAllNews],
+  );
+  const hasMoreNewsProjects = content.projects.length > newsPreviewLimit;
   const visibleContactLinks = useMemo(() => {
     const existingLinks = Array.isArray(content.contactLinks) ? content.contactLinks : [];
 
@@ -657,7 +666,9 @@ export function Portfolio({ content }) {
     const mediaQuery = window.matchMedia("(max-width: 760px)");
 
     function updatePreviewLimit() {
-      setTrackPreviewLimit(mediaQuery.matches ? MOBILE_TRACK_PREVIEW_COUNT : DESKTOP_TRACK_PREVIEW_COUNT);
+      const isMobile = mediaQuery.matches;
+      setTrackPreviewLimit(isMobile ? MOBILE_TRACK_PREVIEW_COUNT : DESKTOP_TRACK_PREVIEW_COUNT);
+      setNewsPreviewLimit(isMobile ? MOBILE_NEWS_PREVIEW_COUNT : DESKTOP_NEWS_PREVIEW_COUNT);
     }
 
     updatePreviewLimit();
@@ -966,7 +977,7 @@ export function Portfolio({ content }) {
                 <em>{content.projects.length} entries</em>
               </div>
               <div className="news-project-grid">
-                {content.projects.map((project, index) => {
+                {visibleNewsProjects.map((project, index) => {
                   const previewImage = project.image || project.previewImage;
 
                   return (
@@ -976,10 +987,13 @@ export function Portfolio({ content }) {
                     >
                       <div className="log-date">
                         <span>{index === 0 ? "Latest" : String(index + 1).padStart(2, "0")}</span>
-                        <em>{project.status}</em>
                       </div>
                       <div className="log-entry-body">
                         <div className="log-entry-main">
+                          <div className="log-entry-meta">
+                            <em>{project.status}</em>
+                            {project.date ? <time>{project.date}</time> : null}
+                          </div>
                           <strong>{project.title}</strong>
                           <p>{project.description}</p>
                           {project.links?.length ? (
@@ -1015,6 +1029,13 @@ export function Portfolio({ content }) {
                   );
                 })}
               </div>
+              {hasMoreNewsProjects ? (
+                <div className="track-list-actions news-list-actions">
+                  <button className="view-all-btn" type="button" onClick={() => setShowAllNews((value) => !value)}>
+                    {showAllNews ? "Show less" : `View all ${content.projects.length} updates`}
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         </section>

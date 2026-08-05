@@ -33,6 +33,7 @@ const emptyProject = {
   title: "New Project",
   description: "",
   note: "",
+  date: "",
   image: "",
   links: [],
 };
@@ -305,7 +306,8 @@ function AdminProjectPreview({ project }) {
       <div>
         <strong>{project.title || "Untitled update"}</strong>
         <span>
-          {project.status || "NEWS"} / {previewImage ? "Preview linked" : "No preview image"}
+          {project.status || "NEWS"}
+          {project.date ? ` / ${project.date}` : ""} / {previewImage ? "Preview linked" : "No preview image"}
         </span>
       </div>
     </div>
@@ -551,6 +553,7 @@ function ProjectEditor({ projects, onChange }) {
               <Field label="Status" value={project.status} onChange={(value) => update(index, { status: value })} />
               <Field label="Titel" value={project.title} onChange={(value) => update(index, { title: value })} />
             </div>
+            <Field label="Datum (optional)" value={project.date || ""} onChange={(value) => update(index, { date: value })} />
             <Field
               label="Beschreibung"
               value={project.description}

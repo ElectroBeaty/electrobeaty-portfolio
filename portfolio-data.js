@@ -4,9 +4,13 @@ window.portfolioData = {
       status: "RELEASED GAME PROJECT",
       title: "ANIMA FIGHT",
       description: "Music for combat and menu systems.",
+      date: "",
       image: "",
       links: [
-        { label: "Tracks", href: "#music" },
+        {
+          label: "Soundtrack",
+          href: "https://electrobeaty.bandcamp.com/album/anima-fight-original-soundtrack"
+        },
         { label: "Play Game", href: "https://snailtank.itch.io/anima-fight" }
       ]
     },
@@ -15,6 +19,7 @@ window.portfolioData = {
       title: "Upcoming Cafe Game",
       description: "Story and menu music for an unreleased cafe project.",
       note: "Preview will be added when the project is public.",
+      date: "",
       image: ""
     }
   ],

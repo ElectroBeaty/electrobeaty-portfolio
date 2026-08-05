@@ -2542,7 +2542,7 @@
 
 .news-log-panel {
   display: block;
-  padding: 18px 20px;
+  padding: 16px 18px;
   border: 1px solid rgba(120,190,255,0.24);
   border-radius: 22px;
   background:
@@ -2564,7 +2564,7 @@
 }
 
 .news-projects {
-  max-width: 1120px;
+  max-width: 1040px;
   margin: 0 auto;
   padding: 0;
   position: relative;
@@ -2583,9 +2583,9 @@
 
 .log-entry {
   display: grid;
-  grid-template-columns: minmax(130px, 0.36fr) minmax(0, 1fr);
-  gap: 16px;
-  padding: 12px 0;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px 0;
   border-top: 1px solid rgba(0,229,255,0.14);
 }
 
@@ -2621,8 +2621,8 @@
 
 .log-entry-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(168px, 236px);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(138px, 184px);
+  gap: 16px;
   align-items: center;
   min-width: 0;
 }
@@ -2630,7 +2630,7 @@
 .log-entry-media {
   position: relative;
   overflow: hidden;
-  min-height: 118px;
+  min-height: 82px;
   border: 1px solid rgba(0,229,255,0.18);
   border-radius: 14px;
   background:
@@ -2664,7 +2664,7 @@
 
 .log-entry strong {
   display: block;
-  font-size: 15px;
+  font-size: 16px;
   margin-bottom: 5px;
 }
 
@@ -2673,6 +2673,36 @@
   font-size: 13px;
   line-height: 1.5;
   opacity: 0.7;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.log-entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.log-entry-meta em,
+.log-entry-meta time {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 1.25px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.log-entry-meta em {
+  color: rgba(0,229,255,0.74);
+}
+
+.log-entry-meta time {
+  color: rgba(219,234,254,0.52);
 }
 
 .news-projects .project-actions {
@@ -2692,6 +2722,10 @@
   opacity: 0.58;
 }
 
+.news-list-actions {
+  margin-top: 16px;
+}
+
 @media (max-width: 760px) {
   .news-projects {
     margin: 0 auto;
@@ -2699,20 +2733,23 @@
   }
 
   .news-log-panel {
-    padding: 16px;
+    padding: 14px;
   }
 
   .log-entry {
-    grid-template-columns: 1fr;
-    gap: 9px;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px 0;
   }
 
   .log-entry-body {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) 84px;
+    gap: 10px;
   }
 
   .log-entry-media {
-    min-height: 132px;
+    min-height: 58px;
+    border-radius: 10px;
   }
 
   .log-date {
@@ -4508,7 +4545,7 @@ footer {
 }
 
 .news-log-panel {
-  padding: 20px;
+  padding: 18px;
 }
 
 .news-log-header {
@@ -4542,13 +4579,13 @@ footer {
 
 .log-entry {
   position: relative;
-  grid-template-columns: minmax(150px, 0.32fr) minmax(0, 1fr);
-  padding: 16px 0;
+  grid-template-columns: 54px minmax(0, 1fr);
+  padding: 14px 0;
 }
 
 .log-entry.latest {
-  margin: 0 -8px 2px;
-  padding: 16px 8px;
+  margin: 0 -6px 2px;
+  padding: 14px 6px;
   border: 1px solid rgba(0,229,255,0.18);
   border-radius: 16px;
   background:
@@ -4559,7 +4596,7 @@ footer {
 .log-date {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   gap: 5px;
   padding: 0;
@@ -4572,6 +4609,8 @@ footer {
   display: inline-flex;
   align-items: center;
   min-height: 26px;
+  min-width: 36px;
+  justify-content: center;
   padding: 0 9px;
   border: 1px solid rgba(0,229,255,0.24);
   border-radius: 999px;
@@ -4582,17 +4621,6 @@ footer {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   text-shadow: 0 0 9px rgba(0,229,255,0.58);
-}
-
-.log-date em {
-  max-width: 170px;
-  color: rgba(219,234,254,0.58);
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 800;
-  letter-spacing: 1.15px;
-  line-height: 1.35;
-  text-transform: uppercase;
 }
 
 .log-entry.latest .log-date span {
@@ -4856,13 +4884,18 @@ footer {
 
   .log-entry,
   .log-entry.latest {
-    grid-template-columns: 1fr;
+    grid-template-columns: 42px minmax(0, 1fr);
     margin-right: 0;
     margin-left: 0;
   }
 
-  .log-date em {
-    max-width: none;
+  .log-entry-main .project-actions {
+    gap: 7px;
+  }
+
+  .news-projects .fanart-btn {
+    min-height: 28px;
+    padding: 5px 9px;
   }
 
   .lightbox-image-stage {
