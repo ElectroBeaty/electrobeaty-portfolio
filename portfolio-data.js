@@ -8,7 +8,7 @@ window.portfolioData = {
       image: "",
       links: [
         {
-          label: "Soundtrack",
+          label: "Full OST",
           href: "https://electrobeaty.bandcamp.com/album/anima-fight-original-soundtrack"
         },
         { label: "Play Game", href: "https://snailtank.itch.io/anima-fight" }
