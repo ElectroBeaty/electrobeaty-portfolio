@@ -12,6 +12,7 @@ const socialLinks = [
   "https://open.spotify.com/intl-de/artist/75g7C74FQ7UaWhFqH0viPC",
   "https://soundcloud.com/electrobeaty",
   "https://www.instagram.com/EBeaty_/",
+  "https://x.com/ElectroBeaty",
   "https://linktr.ee/electrobeaty",
   "https://ebeaty.itch.io",
 ];

@@ -4294,6 +4294,10 @@ select {
   --social-color: #ff4fd8;
 }
 
+.footer-social-link.twitter {
+  --social-color: #1d9bf0;
+}
+
 .footer-social-link svg {
   width: 22px;
   height: 22px;

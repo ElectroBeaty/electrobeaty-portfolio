@@ -47,6 +47,11 @@ const SOCIAL_LINKS = [
     href: "https://www.instagram.com/EBeaty_/",
     icon: "instagram",
   },
+  {
+    label: "Twitter",
+    href: "https://x.com/ElectroBeaty",
+    icon: "twitter",
+  },
 ];
 
 function SocialIcon({ icon }) {
@@ -77,6 +82,15 @@ function SocialIcon({ icon }) {
         <path d="M7.2 8.8v6.6" />
         <path d="M9.3 7.2v8.2" />
         <path d="M11.4 7.8v7.6" />
+      </svg>
+    );
+  }
+
+  if (icon === "twitter") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="m5 5 14 14" />
+        <path d="M19 5 5 19" />
       </svg>
     );
   }
