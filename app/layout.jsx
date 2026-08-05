@@ -11,7 +11,7 @@ const socialLinks = [
   "https://www.youtube.com/@ElectroBeaty",
   "https://open.spotify.com/intl-de/artist/75g7C74FQ7UaWhFqH0viPC",
   "https://soundcloud.com/electrobeaty",
-  "https://www.instagram.com/erik_hrdl/",
+  "https://www.instagram.com/EBeaty_/",
   "https://linktr.ee/electrobeaty",
   "https://ebeaty.itch.io",
 ];

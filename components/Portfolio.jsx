@@ -42,7 +42,7 @@ const SOCIAL_LINKS = [
   },
   {
     label: "Instagram",
-    href: "https://www.instagram.com/erik_hrdl/",
+    href: "https://www.instagram.com/EBeaty_/",
     icon: "instagram",
   },
 ];
