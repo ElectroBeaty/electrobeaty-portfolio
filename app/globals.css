@@ -4235,10 +4235,10 @@ select {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
-  width: min(760px, calc(100% - 32px));
+  gap: 10px;
+  width: min(960px, calc(100% - 32px));
   margin: 0 auto 22px;
-  padding: 14px;
+  padding: 14px 16px;
   border: 1px solid rgba(120,190,255,0.2);
   border-radius: 999px;
   background:
@@ -4263,8 +4263,8 @@ select {
   justify-content: center;
   gap: 8px;
   min-height: 42px;
-  min-width: 128px;
-  padding: 0 14px;
+  min-width: 124px;
+  padding: 0 12px;
   border: 1px solid color-mix(in srgb, var(--social-color) 44%, transparent);
   border-radius: 999px;
   color: #f8fbff;
